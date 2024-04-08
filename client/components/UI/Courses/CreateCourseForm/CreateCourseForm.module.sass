@@ -1,0 +1,30 @@
+@use '../../../../styles/colors' as *
+
+.tagInput
+  display: flex
+  align-items: end
+
+.inputContainer
+  width: 90%
+  padding-right: 0.3em
+
+.addTagButtonContainer
+  margin-bottom: 0.7em
+
+.tag
+  background-color: $color-lightgrey
+  display: inline-flex
+  border-radius: 0.3em
+  padding: 0.4em
+  align-items: center
+  justify-content: center
+  width: auto
+  & > *:first-child
+    margin-right: 0.2rem
+
+.tagsContainer
+  display: flex
+  width: 100%
+  gap: 0.3em
+  flex-wrap: wrap
+  margin-bottom: 0.5em

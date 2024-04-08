@@ -1,0 +1,56 @@
+@use '../../../../styles/colors' as *
+
+.card
+  display: flex
+  flex-direction: column
+  border-radius: 1em
+  overflow: hidden
+  box-shadow: 0 0 1em 0.1em rgba(0,0,0,.1)
+  width: auto
+  height: 15em
+  padding: 1em
+  position: relative
+  transition: all 0.3s ease-in-out
+  &:hover
+    transform: scale(1.05)
+
+.content
+  padding: 1rem
+  display: flex
+  flex-direction: column
+  justify-content: space-between
+  align-items: start
+  height: 100%
+  border-radius: 0.3em
+  p
+    color: $color-darkgrey
+    margin-top: 0.2em
+
+.tags
+  display: flex
+  width: 100%
+  gap: 0.3em
+  flex-wrap: wrap
+
+.tag
+  background-color: $color-lightgrey
+  padding: 0.3em
+  border-radius: 0.3em
+  font-size: 0.8em
+  display: flex
+  align-items: center
+  justify-content: center
+
+.title
+  font-weight: bold
+  font-size: 1.6rem
+  color: #333
+
+.imageContainer
+  position: absolute
+  left: 15em
+  bottom: -5em
+
+.courseImage
+  width: 20em
+

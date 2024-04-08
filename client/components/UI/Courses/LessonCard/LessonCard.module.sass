@@ -1,0 +1,42 @@
+@use '../../../../styles/colors' as *
+
+.lessonCard
+  padding: 0.3rem
+  display: flex
+  justify-content: space-between
+  align-items: center
+  min-height: 1.4rem
+  border-bottom: 1px solid $color-lightgrey // Добавление горизонтальной черты
+
+.lessonInfo
+  display: flex
+  align-items: center
+  & > *:first-child
+    margin-right: 0.5rem
+    width: 1.3rem
+    height: 1.3rem
+    padding: 0.3rem
+    border-radius: 0.2rem
+    background-color: $color-lightgrey
+
+
+.controlsContainer
+  display: flex
+
+.lessonDelete
+  margin-left: 1rem
+  transition: color 0.2s ease-in-out
+  cursor: pointer
+  &:hover
+    color: $color-red
+
+.lessonEdit
+  transition: color 0.2s ease-in-out
+  cursor: pointer
+  &:hover
+    color: $color-blue
+
+.lessonTitle
+  font-weight: bold
+
+

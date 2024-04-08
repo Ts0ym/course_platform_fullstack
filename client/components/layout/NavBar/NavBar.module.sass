@@ -1,0 +1,95 @@
+@use '../../../styles/colors' as *
+
+.navbar
+  display: flex
+  width: 100%
+  height: 4.5em
+  background-color: transparent
+  align-items: center
+  position: relative
+  z-index: 100
+  &::after
+    content: ''
+    position: absolute
+    bottom: 0
+    left: 4%  // Отступ слева
+    right: 4% // Отступ справа
+    height: 1.5px
+    background-color: $color-grey
+
+
+.navBarImage
+  display: flex
+  width: 17%
+  height: auto
+  img
+    padding-top: 1em
+
+
+.navBarControls
+  margin-left: auto
+  display: flex
+  align-items: center
+
+.navBarLinks
+  display: flex
+  align-items: center
+
+.navBarLink
+  margin-right: 1em
+  color: black
+
+.userInfo
+  display: flex
+  align-items: center
+  //margin-right: 1em
+  //padding-right: 1em
+  position: relative
+  width: 17em
+  height: 4.5em
+  //border: 1px solid black
+
+.userCredentials
+  display: flex
+  flex-direction: column
+  align-items: flex-end
+  font-size: 0.9em
+  justify-content: space-between
+  margin-right: 1em
+  margin-left: 4em
+  h1
+    color: black
+    margin-bottom: 0.7em
+
+.userImage
+  background-color: black
+  width: 3em
+  height: 3em
+  border-radius: 100%
+
+.dropdownMenu
+  position: absolute
+  top: 100%
+  right: 0
+  background-color: white
+  display: flex
+  flex-direction: column
+  width: 17em
+  border-radius: 0 0 0.3em 0.3em
+  align-items: end
+  box-shadow: 0 0 1em 0.2em rgba(0,0,0,.1)
+  z-index: 101
+
+.dropdownItem
+  padding: 0.5em 1em
+  color: black
+  width: 100%
+  display: flex
+  justify-content: end
+  height: 2.5em
+  border-radius: 0.3rem
+  transition: all 0.3s ease-in-out
+  align-items: center
+
+  &:hover
+    background-color: darken($color-lightgrey, 10%)

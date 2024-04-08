@@ -1,0 +1,74 @@
+@use '../../../../styles/colors' as *
+
+.lessonList
+  display: flex
+  flex-direction: column
+  gap: 0.5em
+  min-height: 40vh
+  padding-top: 3em
+
+.closeButton
+  position: absolute
+  top: 1em
+  right: 1em
+  width: 2.5em // Размер крестика
+  height: 2.5em
+  background: transparent
+  cursor: pointer
+  display: flex
+  align-items: center
+  justify-content: center
+  border: none
+  border-radius: 0.3em
+  transition: all 0.2s ease-in-out
+
+  &::before, &::after
+    content: ''
+    position: absolute
+    height: 0.1em // Толщина линии
+    background-color: #000 // Цвет линии
+    width: 70% // Длина линии относительно размера кнопки
+
+  &::before
+    transform: rotate(45deg)
+
+  &::after
+    transform: rotate(-45deg)
+
+  &:hover
+    background-color: #f3f3f3
+
+
+.exitIcon
+  margin-left: auto
+  font-size: 1.5em
+  font-weight: 200
+
+.lessonItem
+  cursor: pointer
+  display: flex
+  width: 100%
+  padding: 1.5em
+  background-color: #ffffff
+  border-radius: 0.5em
+  align-items: center
+  justify-content: space-between
+  box-shadow: 0 0 1em 0.1em rgba(0,0,0,.1)
+  transition: all 0.3s ease-in-out
+  &:hover
+    transform: translate(0.5em, 0)
+  p
+    font-size: 1.3em
+
+.lessonIcon
+  border-radius: 100%
+  background-color: $color-lightgrey
+  font-size: 0.8em
+  padding: 0.8em
+  width: 2em
+  height: 2em
+  margin-right: 1em
+
+.infoContainer
+  display: flex
+  align-items: center

@@ -1,0 +1,41 @@
+@use '../../../styles/colors' as *
+
+.inputContainer
+  position: relative
+  display: inline-block
+  height: 2.8em // Убедитесь, что контейнер имеет фиксированную высоту
+  input
+    width: 100%
+    padding: 0.8em 3em 0.8em 0.8em // Добавьте padding справа, чтобы текст не перекрывал иконку
+    background-color: $color-lightgrey
+    border-radius: 0.3em
+    border: none
+    font-size: 1em
+    height: 100%
+    &:focus
+      outline: none
+      border: 0.1em solid #b9b9b9
+      background-color: white
+
+.iconsContainer
+  display: flex
+  position: absolute
+  align-items: center
+  top: 0 // Изменено с 40% на 0
+  right: 0.7rem
+  height: 100% // Растягиваем на всю высоту родителя
+  transform: translateY(0) // Убрали смещение, поскольку высота теперь 100%
+
+.separator
+  width: 2px
+  height: 1.2em
+  background-color: #ccc
+  margin-right: 0.7em
+
+.deleteIcon
+  font-size: 1.2em
+  margin-right: 0.7em
+  cursor: pointer
+  transition: color 0.2s ease-in-out
+  &:hover
+    color: $color-red
