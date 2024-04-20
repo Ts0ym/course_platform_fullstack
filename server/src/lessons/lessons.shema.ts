@@ -18,9 +18,10 @@ export class Lesson {
 
     @Prop({ required: true })
     description: string;
+
     // Дополнительные поля для различных типов уроков
     @Prop({ required: false }) // Текстовый урок
-    content?: string;
+    text?: string;
 
     @Prop({ required: false }) // Урок-тест
     questions?: LessonQuestion[];
@@ -30,6 +31,9 @@ export class Lesson {
 
     @Prop({ required: true })
     reward: number
+
+    @Prop({ required: true })
+    homework: boolean
 }
 
 export interface LessonQuestion{

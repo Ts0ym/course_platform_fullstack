@@ -80,7 +80,7 @@ export class LessonsService {
         const homeworks = await this.homeworkModel.find({
             lessonId: lessonId,
             userId: userId
-        })
+        }).populate({path: "userId", select: "_id email name surname"})
 
         // Проверяем, выполнен ли урок
         const isCompleted = progress?.completedLessons.some(id => id.equals(lesson._id)) || false;

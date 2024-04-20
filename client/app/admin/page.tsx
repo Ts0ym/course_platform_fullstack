@@ -19,7 +19,6 @@ const Page = () => {
             <Tabs
                 defaultActiveKey="courses"
                 id="uncontrolled-tab-example"
-                className="mb-3"
             >
                 <Tab eventKey="courses" title="Курсы">
                     <CoursesList/>

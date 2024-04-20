@@ -19,42 +19,43 @@ const NavBar = () => {
 
     return (
         <div className={styles.navbar}>
-            <div className={styles.navBarImage}>
-                <Image src={"/images/headerlogo.png"} alt={"logo"} width={600} height={600} layout="responsive"/>
-            </div>
-            <div className={styles.navBarControls}>
-                <div className={styles.navBarLinks}>
+
+                <div className={styles.navBarImage}>
+                    <Image src={"/images/headerlogo.png"} alt={"logo"} width={600} height={600} layout="responsive"/>
+                </div>
+                <div className={styles.navBarControls}>
+                    <div className={styles.navBarLinks}>
+                        {
+                            NAVBAR_ROUTES.map((link, index) => <Link
+                                key={index}
+                                href={link.path}
+                                className={styles.navBarLink}>{link.title}</Link>)
+                        }
+                        {
+                            user && user.role === 'admin' &&
+                            <Link href={'/admin'} className={styles.navBarLink}>Администрирование</Link>
+                        }
+                    </div>
                     {
-                        NAVBAR_ROUTES.map((link, index) => <Link
-                            key={index}
-                            href={link.path}
-                            className={styles.navBarLink}>{link.title}</Link>)
-                    }
-                    {
-                        user && user.role === 'admin' &&
-                        <Link href={'/admin'} className={styles.navBarLink}>Администрирование</Link>
+                        user &&
+                        <div className={styles.userInfo}
+                             onMouseEnter={() => setIsDropdownVisible(true)}
+                             onMouseLeave={() => setIsDropdownVisible(false)}>
+                            <div className={styles.userCredentials}>
+                                <h1>{`${user.name} ${user.surname}`}</h1>
+                                <p>{user.email}</p>
+                            </div>
+                            <div className={styles.userImage}></div>
+                            {isDropdownVisible && (
+                                <div className={styles.dropdownMenu}>
+                                    <Link href="/mycourses" className={styles.dropdownItem}>Мои курсы</Link>
+                                    <Link href="/profile" className={styles.dropdownItem}>Профиль</Link>
+                                    <Link href="/settings" className={styles.dropdownItem}>Настройки</Link>
+                                </div>
+                            )}
+                        </div>
                     }
                 </div>
-                {
-                    user &&
-                    <div className={styles.userInfo}
-                         onMouseEnter={() => setIsDropdownVisible(true)}
-                         onMouseLeave={() => setIsDropdownVisible(false)}>
-                        <div className={styles.userCredentials}>
-                            <h1>{`${user.name} ${user.surname}`}</h1>
-                            <p>{user.email}</p>
-                        </div>
-                        <div className={styles.userImage}></div>
-                        {isDropdownVisible && (
-                            <div className={styles.dropdownMenu}>
-                                <Link href="/mycourses" className={styles.dropdownItem}>Мои курсы</Link>
-                                <Link href="/profile" className={styles.dropdownItem}>Профиль</Link>
-                                <Link href="/settings" className={styles.dropdownItem}>Настройки</Link>
-                            </div>
-                        )}
-                    </div>
-                }
-            </div>
         </div>
     );
 };

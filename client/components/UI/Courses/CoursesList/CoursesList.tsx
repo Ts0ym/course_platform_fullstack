@@ -9,13 +9,11 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons"
 import {useQuery} from "@tanstack/react-query";
 import {Button, Modal, Spinner} from "react-bootstrap";
-import {useRouter} from "next/navigation";
 import CreateCourseForm from "@/components/UI/Courses/CreateCourseForm/CreateCourseForm";
 const CoursesList = () => {
 
-    const router = useRouter()
     const [showModal, setShowModal] = useState(false)
-    const {data, isLoading, isError} = useQuery({
+    const {data, isLoading} = useQuery({
         queryFn: () => CoursesService.getAllCourses(),
         queryKey: ['courses'],
     })
@@ -58,15 +56,19 @@ const CoursesList = () => {
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onDeleteClick={() => setSearchQuery('')}
                     />
-                    <CustomButton onClick={() => {
-                        setShowModal(true)
-                    }} color="blue"><FontAwesomeIcon icon={faPlus}/> Добавить курс</CustomButton>
+                    <div>
+                        <CustomButton onClick={() => {
+                            setShowModal(true)
+                        }} color="black"><FontAwesomeIcon icon={faPlus}/> Добавить курс</CustomButton>
+                    </div>
                 </div>
                 {
                     isLoading
                         ? <Spinner animation="border" variant="primary"/>
                         : (filteredCourses && Array.isArray(filteredCourses))
-                            ? filteredCourses.map(course => <CoursesCard key={course._id} course={course}/>)
+                            ? filteredCourses.map(course => <CoursesCard
+                                key={course._id}
+                                course={course}/>)
                             : null
                 }
             </div>

@@ -16,7 +16,9 @@ export class AuthService {
     }
 
     public static async register(email: string, password: string, name: string, surname: string) {
-        const response = await $authApi.post<AuthResponse>("/auth/register", {email, password, name, surname})
+        const response = await $authApi.post<AuthResponse>(
+            "/auth/register",
+            {email, password, name, surname})
         localStorageService.setAccessToken(response.data.accessToken)
         localStorageService.setRefreshToken(response.data.refreshToken)
         return response
@@ -27,6 +29,7 @@ export class AuthService {
             const response = await $authApi.post("/auth/logout");
             localStorageService.removeAccessToken()
             localStorageService.removeRefreshToken()
+            return response
         }catch (e) {
             return e
         }

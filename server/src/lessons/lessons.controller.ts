@@ -1,9 +1,22 @@
-import {Body, Controller, Delete, Get, Param, Post, Query, UploadedFiles, UseInterceptors} from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpStatus,
+    Param,
+    Post,
+    Query,
+    UploadedFiles,
+    UseInterceptors
+} from "@nestjs/common";
 import {LessonsService} from "./lessons.service";
 import {LESSONS_COLLECTION_NAME} from "../constants";
 import {CreateLessonDto} from "./lessons.dto";
 import {FileFieldsInterceptor} from "@nestjs/platform-express";
 import {CoursesProgressService} from "../courses-progress/courses-progress.service";
+import {ApiOperation, ApiResponse} from "@nestjs/swagger";
+import {AuthResponseDto} from "../auth/auth.types";
 
 @Controller(LESSONS_COLLECTION_NAME)
 export class LessonsController {
@@ -12,6 +25,22 @@ export class LessonsController {
         private coursesProgressService: CoursesProgressService
     ) {}
 
+    @ApiOperation({summary: "Принимает id пользователя и id урока и " +
+            "возвращает объект урока, объект курса, объект темы, выполнен ли урок пользователем, домашние задания пользователя для данного урока"})
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: AuthResponseDto,
+        description: "Получен JWT refresh, access token и информация о пользователе",
+        schema: {
+            example: {
+                lesson: {},
+                course: {},
+                theme: {},
+                isCompleted: false,
+                homeworks: [],
+            }
+        }
+    })
     @Get()
     async getLessonByUser(@Query('userId') userId: string,
                           @Query('lessonId') lessonId: string

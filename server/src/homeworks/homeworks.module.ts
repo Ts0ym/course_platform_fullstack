@@ -4,6 +4,7 @@ import {MongooseModule} from "@nestjs/mongoose";
 import {Lesson, LessonSchema} from "../lessons/lessons.shema";
 import {Homework, HomeworkSchema} from "./homeworks.schema";
 import {User, UserSchema} from "../users/users.schema";
+import { HomeworksController } from './homeworks.controller';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import {User, UserSchema} from "../users/users.schema";
       { name: User.name, schema: UserSchema },
     ])
   ],
-  providers: [HomeworksService]
+  providers: [HomeworksService],
+  controllers: [HomeworksController]
 })
 export class HomeworksModule {}

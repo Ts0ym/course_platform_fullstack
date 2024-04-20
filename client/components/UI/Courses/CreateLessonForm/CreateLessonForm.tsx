@@ -1,15 +1,20 @@
-import React, {ChangeEvent} from 'react';
+'use client'
+import React, {ChangeEvent, useState} from 'react';
 import styles from "./CreateLessonForm.module.sass"
 import CustomInput from "@/components/common/CustomInput/CustomInput";
 import FileUploader from "@/components/common/FileUpload/FileUpload";
 import CustomButton from "@/components/common/CustomButton/CustomButton";
 import {ILessonQuestion, LessonType} from "@/types";
 import CustomSelect from "@/components/common/CustomSelect/CustomSelect";
-import CustomTextBox from "@/components/common/ CustomTextBox/CustomTextBox";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import CreateQuestionForm from "@/components/UI/Courses/CreateQuestionForm/CreateQuestionForm";
 import QuestionCard from "@/components/UI/Courses/QuestionCard/QuestionCard";
+import CustomCheckbox from "@/components/common/CustomCheckbox/CustomCheckbox";
+import {Editor} from 'react-draft-wysiwyg';
+import { EditorState } from 'draft-js';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { stateToHTML } from 'draft-js-export-html';
 
 interface CreateLessonFormProps {
     onSubmit: (formData: any) => void
@@ -17,14 +22,16 @@ interface CreateLessonFormProps {
 
 const CreateLessonForm = ({ onSubmit } : CreateLessonFormProps) => {
 
-    const [title, setTitle] = React.useState<string>("");
-    const [description, setDescription] = React.useState<string>("");
-    const [video, setVideo] = React.useState<File | null>(null);
-    const [lessonType, setLessonType] = React.useState<LessonType>("video");
-    const [textContent, setTextContent] = React.useState<string>("");
-    const [quizQuestions, setQuizQuestions] = React.useState<ILessonQuestion[]>([])
-    const [isCreateQuestionShow, setIsCreateQuestionShow] = React.useState<boolean>(false);
-    const [reward, setReward] = React.useState<number>(0);
+    const [title, setTitle] = useState<string>("");
+    const [description, setDescription] = useState<string>("");
+    const [video, setVideo] = useState<File | null>(null);
+    const [lessonType, setLessonType] = useState<LessonType>("video");
+    const [textContent, setTextContent] = useState<string>("");
+    const [quizQuestions, setQuizQuestions] = useState<ILessonQuestion[]>([])
+    const [isCreateQuestionShow, setIsCreateQuestionShow] = useState<boolean>(false);
+    const [reward, setReward] = useState<string>("");
+    const [homework, setHomework] = useState<boolean>(false);
+    const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
     const onUploadChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
@@ -35,19 +42,28 @@ const CreateLessonForm = ({ onSubmit } : CreateLessonFormProps) => {
         }
     }
 
+    const handleChangeReward = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = e.target.value;
+        // Убедитесь, что значение является числовым или пустым строковым значением
+        if (!val || /^\d+$/.test(val)) {
+            setReward(val);
+        }
+    };
+
     const createFormData = () => {
         const formData = new FormData();
         formData.append("title", title);
         formData.append("type", lessonType);
         formData.append("description", description);
         formData.append("reward", reward.toString());
+        formData.append("homework", homework.toString());
 
         switch(lessonType){
             case "video":
                 video && formData.append("video", video);
                 break;
             case "text":
-                formData.append("text", textContent);
+                formData.append("text", stateToHTML(editorState.getCurrentContent()))
                 break;
             case "quiz":
                 formData.append("questions", JSON.stringify(quizQuestions));
@@ -74,6 +90,10 @@ const CreateLessonForm = ({ onSubmit } : CreateLessonFormProps) => {
             }
             return question;
         }));
+    };
+
+    const handleEditorChange = (state: EditorState) => {
+        setEditorState(state);
     };
 
 
@@ -114,18 +134,23 @@ const CreateLessonForm = ({ onSubmit } : CreateLessonFormProps) => {
             }
             {
                 lessonType === "text"
-                && <CustomTextBox
-                    value={textContent}
-                    onChange={e => setTextContent(e.target.value)}
-                    placeholder={"Текст урока"}
-                    title={"Добавьте текст урока"}
-                    titleShow={true}
-                />
+                &&
+                <>
+                    <div className={styles.editorContainer}>
+                        <Editor
+                            editorState={editorState}
+                            onEditorStateChange={handleEditorChange}
+                            wrapperClassName={styles.wrapper}
+                            editorClassName={styles.editor}
+                            toolbarClassName={styles.toolbar}
+                        />
+                    </div>
+                </>
             }
             {
                 lessonType === "quiz"
                 &&
-                <div>
+                <div className={styles.addQuizContainer}>
                     {
                         <div>
                             <h1 className={styles.questionsHeader}>Вопросы теста:</h1>
@@ -149,7 +174,7 @@ const CreateLessonForm = ({ onSubmit } : CreateLessonFormProps) => {
                         !isCreateQuestionShow &&
                         <CustomButton
                             onClick={() => {setIsCreateQuestionShow(true)}}
-                            color={'blue'}
+                            color={"black"}
                         >
                             <FontAwesomeIcon icon={faPlus}/> Добавить вопрос
                         </CustomButton>
@@ -161,12 +186,18 @@ const CreateLessonForm = ({ onSubmit } : CreateLessonFormProps) => {
                 title={"Добавьте награду за урок"}
                 type={"number"}
                 value={reward}
-                onChange={e => setReward(Number(e.target.value))}
+                onChange={handleChangeReward}
                 titleShow={true}
 
             />
-            <CustomButton onClick={() =>
-                onSubmit(createFormData()) } color={"blue"}>Сохранить урок</CustomButton>
+            <CustomCheckbox
+                label={"Нужно домашнее задание"}
+                value={homework}
+                onChange={(e) => setHomework(e.target.checked)}
+            />
+            <CustomButton
+                onClick={() => onSubmit(createFormData()) }
+                color={"black"}>Сохранить урок</CustomButton>
         </div>
     );
 };

@@ -7,5 +7,7 @@ export class CreateLessonDto{
     type: LessonType;
     content?: string;
     questions?: string;
+    text?: string;
+    homework: boolean;
     // videoUrl?: string;
 }

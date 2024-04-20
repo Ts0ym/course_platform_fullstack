@@ -15,14 +15,13 @@ interface LessonCardProps {
 const LessonCard: React.FC<LessonCardProps> = ({ lesson }) => {
 
     const queryClient = useQueryClient();
-    const toastId = useRef<Id | undefined>()
 
     const deleteLessonMutation = useMutation({
         mutationFn: async () => {
             await CoursesService.deleteLesson(lesson._id);
         },
         onSuccess: () => {
-            NotificationsService.showNotification(toastId, "Урок удален", "success")
+            NotificationsService.showNotification( "Урок удален", "success")
             queryClient.invalidateQueries({queryKey: ['courses']});
         }
     })

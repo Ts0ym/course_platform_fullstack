@@ -19,7 +19,6 @@ export interface CourseFormData {
 
 const CreateCourseForm = () => {
 
-    const toastId = useRef<Id | undefined>()
     const queryClient = useQueryClient()
 
     const mutation = useMutation({
@@ -27,10 +26,10 @@ const CreateCourseForm = () => {
             await CoursesService.createCourse(formData);
         },
         onMutate: () => {
-            NotificationsService.showNotification(toastId, "Создание курса...", "info")
+            NotificationsService.showNotification( "Создание курса...", "info")
         },
         onSuccess: () => {
-            NotificationsService.showNotification(toastId, "Курс успешно создан!", "success")
+            NotificationsService.showNotification("Курс успешно создан!", "success")
             queryClient.invalidateQueries({queryKey: ['courses']});
             setFormData({
                 title: '',
@@ -39,7 +38,7 @@ const CreateCourseForm = () => {
             })
         },
         onError: (error) => {
-            NotificationsService.showNotification(toastId, "Ошибка при создании курса!", "error")
+            NotificationsService.showNotification( "Ошибка при создании курса!", "error")
         },
         mutationKey: ['courses']
     })

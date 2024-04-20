@@ -28,13 +28,17 @@ const FileUploader = ({ onFileSelect, onFileDelete, fileValue, title = "", title
                 hidden
                 ref={inputRef}
             />
-            {fileValue && <p className={styles.fileSelected}>{fileValue.name} <FontAwesomeIcon icon={faXmark} className={styles.deleteIcon} onClick={onFileDelete}/></p>}
+            {fileValue &&
+                <p className={styles.fileSelected}>
+                    {fileValue.name}
+                    <FontAwesomeIcon icon={faXmark} className={styles.deleteIcon} onClick={onFileDelete}/>
+                </p>}
             {!fileValue && <CustomButton
                 onClick={(e) => {
                     e.preventDefault();
                     inputRef.current?.click()
                 }}
-                color={"blue"}>
+                color={"black"}>
                 <FontAwesomeIcon icon={faPlus}/> Выбрать файл</CustomButton>}
         </div>
     )

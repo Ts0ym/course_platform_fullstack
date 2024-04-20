@@ -1,9 +1,10 @@
 .lessonPage
-  padding: 1em 2em
+  padding: 2em
   min-height: 100vh
   display: flex
   flex-direction: column
   align-items: center
+
 
 .header
   display: flex
@@ -19,7 +20,7 @@
 .navButtons
   display: flex
   width: 100%
-  margin-top: 1em
+  margin-top: 2em
 
 .backButton
   margin-right: auto
@@ -29,9 +30,13 @@
 
 .lessonDescription
   font-size: 1.1em
-  margin-top: 2em
+  margin: 2em 0
   color: black
   line-height: 1.4
+  flex-wrap: wrap
+  word-break: break-all
+  justify-content: flex-start
+
 
 .videoContainer
   margin-top: 2em
@@ -40,4 +45,50 @@
   width: 60%
   border-radius: 0.5em
   overflow: hidden
+
+.textContainer
+  line-height: 1.5
+  font-size: 1.1em
+  flex-direction: column
+  display: flex
+  justify-content: flex-start
+  width: 100%
+
+  h1, h2, h3, h4, h5, h6
+    color: #4A4A4A
+
+  p
+    margin-bottom: 0.5em
+
+  strong
+    font-weight: bold
+
+  em
+    font-style: italic
+
+  u
+    text-decoration: underline
+
+  ol, ul
+    margin-left: 1em
+    padding-left: 0
+  ul
+    list-style-type: disc // Задаёт стандартные точки в качестве маркеров списка
+    padding-left: 1em
+
+  ol
+    list-style-type: decimal
+  li
+    margin-bottom: 0.5em
+
+
+.homeworkContainer
+  display: flex
+  width: 100%
+  flex-direction: column
+  h1
+    font-size: 2em
+    font-weight: bold
+    margin: 1em 0
+
 

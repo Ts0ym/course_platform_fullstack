@@ -1,0 +1,66 @@
+@use '../../../../styles/colors' as *
+
+.card
+  display: flex
+  width: 100%
+  min-height: 5.5em
+  //background-color: #efefef
+  border: 0.1em solid $color-lightgrey
+  border-radius: 1em
+  padding: 1.4em
+  align-items: center
+
+.userPicture
+  background-color: black
+  border-radius: 100%
+  width: 3em
+  height: 3em
+  align-self: flex-start
+
+.infoContainer
+  display: flex
+  flex-direction: column
+  padding: 0 1em
+
+.homeworkInfo
+  display: flex
+  gap: 0.3em
+  align-items: flex-end
+  margin-bottom: 1em
+
+.name
+  font-size: 1.2em
+
+.date
+  color: #b6b6b6
+  font-size: 1.05em
+  margin: 0 1.2em
+
+
+.controls
+  display: flex
+  font-size: 1.05em
+  color: $color-lightgrey
+  gap: 0.3em
+  cursor: pointer
+  border: none
+  transition: all 0.2s ease-in-out
+  background: none
+  &:hover
+    color: $color-darkgrey
+
+.homeworkContent
+
+.buttonsContainer
+  display: flex
+  gap: 1em
+
+.homeworkGrade
+  align-self: flex-start
+  margin-left: auto
+  color: $color-darkgrey
+  font-size: 1.1em
+
+.timeIcon
+  font-size: 0.9em
+  margin-right: 0.3em

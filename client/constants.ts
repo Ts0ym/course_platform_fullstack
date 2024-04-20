@@ -7,5 +7,5 @@ export const LOCAL_STORAGE_REFRESH_TOKEN_KEY ='refreshToken';
 export const NAVBAR_ROUTES: NavBarRoute[]= [
     { path: "/courses", title: "Все курсы"},
     { path: "/", title: "Консультации"},
-    { path: "/", title: "Досижения"},
+    { path: "/", title: "Достижения"},
 ]

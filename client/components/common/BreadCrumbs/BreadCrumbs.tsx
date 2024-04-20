@@ -10,7 +10,7 @@ const BreadCrumbs = ({breadcrumbs} :
         <div className={styles.breadcrumbs}>
             {
                 breadcrumbs.map(({title, path}, index) =>
-                <Link href={path} key={title} className={styles.crumb}>
+                <Link href={path} key={index} className={styles.crumb}>
                     {title}
                     {(index !== breadcrumbs.length - 1) && <FontAwesomeIcon icon={faChevronRight} className={styles.arrow}/>}
                 </Link>

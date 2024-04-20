@@ -5,7 +5,7 @@ import {useQuery} from "@tanstack/react-query";
 import {CoursesService} from "@/services/coursesService";
 import {useAppSelector} from "@/redux/hooks";
 import styles from './CourseContent.module.sass'
-import {Button, Modal, ProgressBar} from "react-bootstrap";
+import {Modal, ProgressBar} from "react-bootstrap";
 import {ICourseTheme} from "@/types";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBook, faUnlock} from "@fortawesome/free-solid-svg-icons";
@@ -16,14 +16,13 @@ import LessonList from "@/components/UI/Courses/LessonList/LessonList";
 const Page = ({params: {courseId}}: {params: {courseId: string}}) => {
 
     const user = useAppSelector(state => state.auth.user);
-    const {data, isPending, isError, isSuccess} = useQuery({
+    const {data, isPending, isError} = useQuery({
         queryFn: () => CoursesService.getCoursesWithProgress(user._id, courseId),
         queryKey: ['courseWithProgress'],
     })
     const [show, setShow] = React.useState(false);
     const [currentTheme, setCurrentTheme] = React.useState<ICourseTheme | null>(null)
 
-    // Проверка на наличие данных
     if (isPending) return <div>Loading...</div>;
     if (isError || !data) return <div>Error occurred or data is not available</div>;
 
@@ -61,7 +60,7 @@ const Page = ({params: {courseId}}: {params: {courseId: string}}) => {
             <Modal.Body>
                 <LessonList
                     lessons={currentTheme ? currentTheme?.lessons : []}
-                    completedLessonsIds={progress?.completedLessons}
+                    completedLessonsIds={progress?.completedLessons || []}
                     onExit={handleClose}
                 />
             </Modal.Body>
@@ -73,7 +72,7 @@ const Page = ({params: {courseId}}: {params: {courseId: string}}) => {
                     <h1>{course?.title}</h1>
                     <div className={styles.tagsContainer}>
                         {course?.tags.map((tag: string) => (
-                            <div className={styles.tag}>{tag}</div>
+                            <div className={styles.tag} key={tag}>{tag}</div>
                         ))}
                     </div>
                     <div className={styles.progressContainer}>

@@ -19,7 +19,6 @@ interface ThemeCardProps {
 
 const ThemeCard = ({ theme } : ThemeCardProps) => {
 
-    const toastId = useRef<Id | undefined>()
     const queryClient = useQueryClient()
     const [showModal, setShowModal] = React.useState(false);
     const [themeTitle, setThemeTitle] = React.useState<string>(theme.title);
@@ -40,17 +39,17 @@ const ThemeCard = ({ theme } : ThemeCardProps) => {
             await CoursesService.addLessonToTheme(formData, updateUploadProgress);
         },
         onMutate: () => {
-            NotificationsService.showNotification(toastId, "Создание урока...", "info")
+            NotificationsService.showNotification("Создание урока...", "info")
         },
         onSuccess: () => {
-            NotificationsService.showNotification(toastId, "Урок успешно создан!", "success")
+            NotificationsService.showNotification( "Урок успешно создан!", "success")
             queryClient.invalidateQueries({queryKey: ['courses']});
             setIsUploadBarVisible(false)
             setShowModal(false)
 
         },
         onError: (error) => {
-            NotificationsService.showNotification(toastId, "Ошибка при создании урока!", "error")
+            NotificationsService.showNotification( "Ошибка при создании урока!", "error")
             setIsUploadBarVisible(false)
         },
         mutationKey: ['courses']

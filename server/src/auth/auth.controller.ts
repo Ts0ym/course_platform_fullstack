@@ -10,31 +10,48 @@ import {
 import {AuthService} from "./auth.service";
 import {LoginDto} from "./auth.dto";
 import {CreateUserDto} from "../users/users.dto";
-import {JwtService} from "@nestjs/jwt";
 import {RtGuard} from "../guards/rtGuard";
 import {GetCurrentUser} from "../decorators/get-current-user";
 import {GetCurrentUserEmail} from "../decorators/get-current-user-id.decorator";
 import {AtGuard} from "../guards/atGuard";
-import {MailService} from "../mail/mail.service";
 import { Response } from 'express';
 import {REDIRECT_ACTIVATION_URL} from "../constants";
-import {ApiOperation, ApiResponse} from "@nestjs/swagger";
+import {ApiBody, ApiOperation, ApiResponse} from "@nestjs/swagger";
 import {AuthResponseDto, RefreshTokenDto} from "./auth.types";
 
 
 @Controller('auth')
 export class AuthController {
     constructor(
-        private readonly authService: AuthService,
-        private readonly jwtService: JwtService,
-        private readonly mailService: MailService
+        private readonly authService: AuthService
     ) {}
 
     @ApiOperation({summary: "Логин пользователя, возвращает JWT refresh и access token"})
     @ApiResponse({
         status: HttpStatus.OK,
         type: AuthResponseDto,
-        description: "Получен JWT refresh, access token и информация о пользователе"})
+        description: "Получен JWT refresh, access token и информация о пользователе",
+        schema: {
+            example: {
+                accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI...',
+                refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI...',
+                user: {}
+            }
+        }
+    })
+    @ApiBody({
+        description: "Данные для логина пользователя",
+        type: LoginDto,
+        examples: {
+            a: {
+                summary: 'Пример валидного запроса',
+                value: {
+                    email: "user@example.com",
+                    password: "strong_password123"
+                },
+            },
+        },
+    })
     @Post("/login")
     @HttpCode(HttpStatus.OK)
     async login(@Body() loginDto: LoginDto){
@@ -42,7 +59,25 @@ export class AuthController {
     }
 
     @ApiOperation({summary: "Регистрация пользователя, возвращает JWT refresh и access token"})
-    @ApiResponse({status: HttpStatus.OK, type: AuthResponseDto, description: "Получен JWT refresh, access token и информация о пользователе"})
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: AuthResponseDto,
+        description: "Получен JWT refresh, access token и информация о пользователе"})
+    @ApiBody({
+        description: "Данные для регистрации пользователя",
+        type: CreateUserDto,
+        examples: {
+            a: {
+                summary: 'Пример 1',
+                value: {
+                    email: "user@example.com",
+                    password: "strong_password123",
+                    name: "John",
+                    surname: "Doe"
+                },
+            },
+        },
+    })
     @Post("/register")
     @HttpCode(HttpStatus.CREATED)
     async register(@Body() registerDto: CreateUserDto){
@@ -72,12 +107,6 @@ export class AuthController {
         return await this.authService.logout(email)
     }
 
-    @UseGuards(AtGuard)
-    @Post("/test")
-    async test(){
-        return "Test passed"
-    }
-
     @ApiOperation({summary: "Активирует аккаунт пользователя по его токену активации"})
     @ApiResponse({status: HttpStatus.OK, type: RefreshTokenDto, description: "Аккаунт пользователя успешно активирован"})
     @Get("/activate/:token")
@@ -98,7 +127,7 @@ export class AuthController {
     @ApiResponse({status: HttpStatus.OK, type: RefreshTokenDto, description: "Пароль пользователя успешно обновлен"})
     @HttpCode(HttpStatus.OK)
     @Post("/reset/:token")
-    async resetPassword(@Param( 'token') token: string, @Res() res: Response, @Body() body: {password: string}){
+    async resetPassword(@Param( 'token') token: string, @Body() body: {password: string}){
         const user = await this.authService.checkResetPasswordToken(token)
         await this.authService.resetPassword(user.email, body.password)
     }

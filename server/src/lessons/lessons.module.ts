@@ -9,6 +9,7 @@ import {CoursesProgressService} from "../courses-progress/courses-progress.servi
 import {CourseProgress, CourseProgressSchema} from "../courses-progress/courses-progress.schema";
 import {Course, CourseSchema} from "../courses/courses.schema";
 import {Homework, HomeworkSchema} from "../homeworks/homeworks.schema";
+import {User, UserSchema} from "../users/users.schema";
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import {Homework, HomeworkSchema} from "../homeworks/homeworks.schema";
         { name: CourseProgress.name, schema: CourseProgressSchema },
         { name: Course.name, schema: CourseSchema },
         { name: Homework.name, schema: HomeworkSchema },
+        { name: User.name, schema: UserSchema}
     ])
   ],
   controllers: [LessonsController],

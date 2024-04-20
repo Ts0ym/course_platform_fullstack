@@ -1,6 +1,6 @@
 .authForm
   display: flex
-  width: 30%
+  min-width: 30%
   background-color: white
   flex-direction: column
   padding: 2em
@@ -10,6 +10,11 @@
   h1
     color: black
     font-size: 2em
+  @media (max-width: 600px)
+    min-width: 80%
+    padding: 1em
+
+    font-size: 0.8em
 
 .inputsSection
   width: 100%

@@ -1,148 +1,97 @@
-import React, {FC, useState} from 'react';
-import CustomInput from "@/components/common/CustomInput/CustomInput";
-import styles from "./AuthForm.module.sass";
-import CustomButton from "@/components/common/CustomButton/CustomButton";
-import {useRouter} from "next/navigation";
+import {FormErrors, FormValues, useForm} from "@/hooks/useForm";
 import {AuthService} from "@/services/authService";
 import {login} from "@/redux/slices/authSlice";
+import {useRouter} from "next/navigation";
 import {useAppDispatch} from "@/redux/hooks";
+import styles from "@/components/common/AuthForm/AuthForm.module.sass";
+import CustomInput from "@/components/common/CustomInput/CustomInput";
+import CustomButton from "@/components/common/CustomButton/CustomButton";
+import React from "react";
 
 interface AuthFormProps {
     type: "login" | "register"
 }
 
-const AuthForm: FC<AuthFormProps> = ({type}) => {
-
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [name, setName] = useState("");
-    const [surname, setSurname] = useState("");
-
-    const [errorPassword, setErrorPassword] = useState<string | null>(null);
-    const [errorConfirmPassword, setErrorConfirmPassword] = useState<string | null>(null);
-    const [errorEmail, setErrorEmail] = useState<string | null>(null);
-    const [errorName, setErrorName] = useState<string | null>(null);
-    const [errorSurname, setErrorSurname] = useState<string | null>(null);
+const AuthForm = ({ type } : AuthFormProps) => {
 
     const router = useRouter()
     const appDispatch = useAppDispatch()
-
-    const loginHandler =  async () => {
-        if(validateLoginForm()) return;
-        const response = await AuthService.login(email, password)
-            .then(response => {
-                const user = response.data.user;
-                appDispatch(login(user))
-                console.log(response)
-                if(user.role === "admin") {
-                    router.push("/admin")
-                }else{
-                    router.push('/')
-                }
-
-            })
-            .catch(error => {
-                if(error.response.status === 401) {
-                    setErrorPassword("Неверные данные для авторизации")
-                    setErrorEmail("Неверные данные для авторизации")
-                }
-            })
+    const initialValues: FormValues = {
+        email: "",
+        password: "",
+        confirmPassword: "",
+        name: "",
+        surname: ""
     }
 
-    const registerHandler = async () => {
-        if(validateRegisterForm()) return;
-        await AuthService.register(email, password, name, surname)
+    const validateAuthForm = (values: FormValues) => {
+        const errors: FormErrors = {};
+
+        if (!values.email) {
+            errors.email = "Email не может быть пустым";
+        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
+            errors.email = "Некорректный email";
+        }
+
+        if (!values.password) {
+            errors.password = "Пароль не может быть пустым";
+        } else if (values.password.length < 6) {
+            errors.password = "Длина пароля должна быть не менее 6 символов";
+        }
+
+        if (!values.confirmPassword) {
+            errors.confirmPassword = "Подтвердите пароль";
+        }
+
+        if(values.password!== values.confirmPassword) {
+            errors.confirmPassword = "Пароли не совпадают";
+        }
+
+        if(!values.name) {
+            errors.name = "Имя не может быть пустым";
+        }
+
+        if(!values.surname) {
+            errors.surname = "Фамилия не может быть пустой";
+        }
+
+        return errors;
+    }
+
+    const {
+        values,
+        errors,
+        handleChange,
+        handleSubmit,
+        setErrors,
+        handleBlur
+    } = useForm(initialValues, validateAuthForm);
+
+    const loginHandler = () => handleAuth(async () => await AuthService.login(values.email, values.password), "/")
+    const registerHandler = () => handleAuth(async () => await AuthService.register(
+        values.email,
+        values.password,
+        values.name,
+        values.surname
+    ), "/")
+
+    const handleAuth = async (authFn: () => Promise<any>, redirectPath: string) => {
+        await authFn()
             .then(response => {
                 const user = response.data.user;
                 appDispatch(login(user))
                 console.log(response)
-                if(user.role === "admin") {
-                    router.push("/admin")
-                }else{
-                    router.push('/')
-                }
-            })
+                router.push(user.role === "admin"? "/admin" : redirectPath)})
             .catch(error => {
                 if(error.response.status === 400) {
-                    setErrorEmail("Данный email уже зарегистрирован")
+                    setErrors({...errors, email : "Данный email уже зарегистрирован"})
+                } else if(error.response.status === 401) {
+                    setErrors({
+                        ...errors,
+                        password : "Неверные данные для авторизации",
+                        email : "Неверные данные для авторизации"})
                 }
             })
-    }
-
-    const validateRegisterForm = () => {
-        let hasErrors = false;
-
-        clearErrors();
-
-        if (password !== confirmPassword) {
-            setErrorPassword("Пароли не совпадают");
-            setErrorConfirmPassword("Пароли не совпадают");
-            hasErrors = true;
-        }
-
-        if (password === "") {
-            setErrorPassword("Пароль не может быть пустым");
-            hasErrors = true;
-        }
-
-        if (confirmPassword === "") {
-            setErrorConfirmPassword("Подтвердите пароль");
-            hasErrors = true;
-        }
-
-        if (email === "") {
-            setErrorEmail("Электронная почта не может быть пустой");
-            hasErrors = true;
-        } else if (!validateEmail(email)) {
-            setErrorEmail("Некорректный адрес электронной почты");
-            hasErrors = true;
-        }
-
-        if (name === "") {
-            setErrorName("Имя не может быть пустым");
-            hasErrors = true;
-        }
-
-        if (surname === "") {
-            setErrorSurname("Фамилия не может быть пустой");
-            hasErrors = true;
-        }
-
-        return hasErrors;
-    };
-
-    const validateLoginForm = () => {
-        let hasErrors = false;
-        clearErrors();
-
-        if (email === "") {
-            setErrorEmail("Электронная почта не может быть пустой");
-            hasErrors = true;
-        } else if (!validateEmail(email)) {
-            setErrorEmail("Некорректный адрес электронной почты");
-            hasErrors = true;
-        }
-
-        if (password === "") {
-            setErrorPassword("Пароль не может быть пустым");
-            hasErrors = true;
-        }
-
-        return hasErrors;
-    }
-
-    const validateEmail = (email: string) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    };
-
-    const clearErrors = () => {
-        setErrorPassword(null)
-        setErrorConfirmPassword(null)
-        setErrorEmail(null)
-        setErrorName(null)
-        setErrorSurname(null)
     }
 
     return (
@@ -151,46 +100,49 @@ const AuthForm: FC<AuthFormProps> = ({type}) => {
             <div className={styles.inputsSection}>
                 <CustomInput
                     placeholder="Введите ваш email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={values.email}
+                    onChange={handleChange}
                     title="Электронная почта"
                     titleShow={true}
                     type={"email"}
-                    error={errorEmail}
+                    error={errors.email}
+                    id={"email"}
                 />
                 <CustomInput
                     placeholder="Введите ваш пароль"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={values.password}
+                    onChange={handleChange}
                     title="Пароль"
                     titleShow={true}
                     type={"password"}
-                    error={errorPassword}
+                    error={errors.password}
+                    id={"password"}
                 />
                 {type === "register" &&
                     <>
                         <CustomInput
                             placeholder="Подтвердите пароль"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            value={values.confirmPassword}
+                            onChange={handleChange}
                             title="Подтвердите пароль" titleShow={true} type={"password"}
-                            error={errorConfirmPassword}
+                            error={errors.confirmPassword}
+                            id={"confirmPassword"}
                         />
                         <CustomInput
                             placeholder="Введите ваше имя"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            value={values.name}
+                            onChange={handleChange}
                             title="Имя"
                             titleShow={true}
-                            error={errorName}
+                            error={errors.name}
                         />
                         <CustomInput
                             placeholder="Введите вашу фамилию"
-                            value={surname}
-                            onChange={(e) => setSurname(e.target.value)}
+                            value={values.surname}
+                            onChange={handleChange}
                             title="Фамилия"
                             titleShow={true}
-                            error={errorSurname}
+                            error={errors.surname}
                         />
                         <div className={styles.redirects}>
                             <p className={styles.loginRedirect}>Уже есть аккаунт? <span onClick={() => router.push("/auth/login")}>Войти</span></p>
@@ -204,12 +156,16 @@ const AuthForm: FC<AuthFormProps> = ({type}) => {
                     </div>
                 }
             </div>
-            {
-                type === 'login' ? <CustomButton onClick={() => loginHandler()} color={"blue"}>Войти</CustomButton> :
-                    <CustomButton onClick={() => registerHandler()} color={"blue"}>Зарегистрироваться</CustomButton>
-            }
+            <CustomButton
+                onClick={(e) => {
+                    handleSubmit(e);
+                    type === 'login' ? loginHandler() : registerHandler()
+                }}
+                color={"blue"}>
+                {type === "login" ? "Войти" : "Зарегистрироваться"}
+            </CustomButton>
         </div>
     );
-};
+}
 
 export default AuthForm;

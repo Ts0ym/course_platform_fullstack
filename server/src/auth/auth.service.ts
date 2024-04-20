@@ -3,7 +3,6 @@ import {UsersService} from "../users/users.service";
 import {JwtService} from "@nestjs/jwt";
 const bcrypt = require('bcryptjs');
 import {CreateUserDto} from "../users/users.dto";
-import {User, UserDocument} from "../users/users.schema";
 import {LoginDto} from "./auth.dto";
 import {JWT_ACCESS_SECRET_KEY, JWT_REFRESH_SECRET_KEY} from "../constants";
 import {MailService} from "../mail/mail.service";

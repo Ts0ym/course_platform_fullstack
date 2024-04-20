@@ -27,7 +27,9 @@ const Page = () => {
                         isLoading
                             ? <Spinner animation="border" variant="primary"/>
                             : (courses && Array.isArray(courses))
-                                ? courses.map(course => <CoursesDisplayCard key={course._id} course={course}/>)
+                                ? courses.map(course => <CoursesDisplayCard
+                                    key={course._id}
+                                    course={course}/>)
                                 : null                }
                 </div>
             </div>

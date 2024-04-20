@@ -18,7 +18,6 @@ import ThemeCard from "@/components/UI/Courses/ThemeCard/ThemeCard";
 
 const Page = ({ params }: { params: { id: string } }) => {
 
-    const toastId = useRef<Id | undefined>()
     const queryClient = useQueryClient()
     const {data, isLoading, isError} = useQuery({
         queryFn: () => CoursesService.getCourse(params.id),
@@ -30,10 +29,10 @@ const Page = ({ params }: { params: { id: string } }) => {
             await CoursesService.addThemeToCourse(createThemeDto)
         },
         onMutate: () => {
-            NotificationsService.showNotification(toastId, "Создание курса...", "info")
+            NotificationsService.showNotification("Создание курса...", "info")
         },
         onSuccess: () => {
-            NotificationsService.showNotification(toastId, "Тема успешно добавлена", "success")
+            NotificationsService.showNotification("Тема успешно добавлена", "success")
             queryClient.invalidateQueries({queryKey: ['courses']});
             setNewThemeTitle("");
             setNewThemeDescription("");

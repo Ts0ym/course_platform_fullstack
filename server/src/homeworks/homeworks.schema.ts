@@ -4,11 +4,11 @@ import {Types} from "mongoose";
 
 @Schema({collection: HOMEWORKS_COLLECTION_NAME})
 export class Homework {
-    @Prop({type: [Types.ObjectId], default: [], ref: LESSONS_SCHEMA_NAME})
-    lessonId: Types.ObjectId[];
+    @Prop({type: Types.ObjectId, ref: LESSONS_SCHEMA_NAME})
+    lessonId: Types.ObjectId;
 
-    @Prop({type: [Types.ObjectId], default: [], ref: USERS_SCHEMA_NAME})
-    userId: Types.ObjectId[];
+    @Prop({type: Types.ObjectId, ref: USERS_SCHEMA_NAME})
+    userId: Types.ObjectId;
 
     @Prop({required: true})
     content: string

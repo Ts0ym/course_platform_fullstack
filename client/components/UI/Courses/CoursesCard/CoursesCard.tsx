@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC, useRef} from 'react';
 import styles from './CoursesCard.module.sass';
 import {ICourse} from "@/types";
 import {API_URL} from "@/constants";
@@ -9,6 +9,8 @@ import {CoursesService} from "@/services/coursesService";
 import {useRouter} from "next/navigation";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faFile, faList} from "@fortawesome/free-solid-svg-icons";
+import {Id} from "react-toastify";
+import {NotificationsService} from "@/services/notificationsService";
 
 export interface CourseCardProps {
     course: ICourse;
@@ -26,6 +28,8 @@ const CoursesCard: FC<CourseCardProps> = ({ course }) => {
         mutationKey: ['courses'],
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ['courses']});
+            NotificationsService.showNotification( "Курс успешно удален!", "success")
+
         }
     })
 
@@ -69,7 +73,7 @@ const CoursesCard: FC<CourseCardProps> = ({ course }) => {
                         </div>
                     </div>
                     <div className={styles.courseButtons}>
-                        <CustomButton onClick={() => router.push(`admin/courses/edit/${course._id}`)} color={"blue"}>Редактировать</CustomButton>
+                        <CustomButton onClick={() => router.push(`admin/courses/edit/${course._id}`)} color={"black"}>Редактировать</CustomButton>
                         <CustomButton onClick={() => setShowModal(true)} color={"red"}>Удалить</CustomButton>
                     </div>
                 </div>

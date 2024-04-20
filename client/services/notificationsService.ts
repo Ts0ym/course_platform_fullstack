@@ -2,17 +2,19 @@ import {Id, toast, TypeOptions} from "react-toastify";
 import {MutableRefObject} from "react";
 
 export class NotificationsService {
-    public static showNotification(toastRef: MutableRefObject<Id | undefined>, message: string, type: TypeOptions) {
-        if (toastRef.current === undefined) {
-            toastRef.current = toast(message, {
+
+    private static toastId: Id | undefined;
+    public static showNotification(message: string, type: TypeOptions) {
+        if (this.toastId === undefined) {
+            this.toastId = toast(message, {
                 type: type,
                 position: "bottom-left",
                 onClose: () => {
-                    toastRef.current = undefined;
+                    this.toastId = undefined;
                 },
             });
         } else {
-            toast.update(toastRef.current, {
+            toast.update(this.toastId, {
                 render: message,
                 type: type,
             });

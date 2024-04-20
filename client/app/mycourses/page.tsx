@@ -57,9 +57,11 @@ const Page = () => {
             <div className={styles.allMyCoursesContainer}>
                 <div className={styles.courseListHeader}>
                     <h1 className={styles.sectionHeader}>Рекомендуемые курсы</h1>
-                    <CustomButton onClick={() => {router.push('/courses')}} color={'black'}>
-                        Смотреть все
-                    </CustomButton>
+                    <div>
+                        <CustomButton onClick={() => {router.push('/courses')}} color={'black'}>
+                            Смотреть все
+                        </CustomButton>
+                    </div>
                 </div>
                 <div className={styles.courseList}>
                     { recommendedCoursesData && recommendedCoursesData.map((course: ICourse) =>

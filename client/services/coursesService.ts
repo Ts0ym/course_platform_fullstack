@@ -1,5 +1,5 @@
 import $authApi from "@/http/authApi";
-import {CreateCourseDto, CreateThemeDto, ICourse} from "@/types";
+import {CreateCourseDto, CreateHomeworkDto, CreateThemeDto, EditHomeworkDto, ICourse} from "@/types";
 
 export class CoursesService {
     public static async getAllCourses(): Promise<ICourse[]> {
@@ -74,5 +74,31 @@ export class CoursesService {
         const response = await $authApi.get(`/lessons/`, {params: {lessonId, userId}})
         console.log(response.data)
         return response.data
+    }
+
+    public static async addHomeworkToLesson(dto: CreateHomeworkDto){
+        const response = await $authApi.post(`/homeworks`, dto)
+    }
+
+    public static async updateHomework(homeworkId: string, dto: EditHomeworkDto) {
+        try {
+            const response = await $authApi.put(`/homeworks/${homeworkId}`, dto);
+            console.log('Homework updated:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('Error updating homework:', error);
+            throw error;
+        }
+    }
+
+    public static async deleteHomework(homeworkId: string) {
+        try {
+            const response = await $authApi.delete(`/homeworks/${homeworkId}`);
+            console.log('Homework deleted:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('Error deleting homework:', error);
+            throw error;
+        }
     }
 }

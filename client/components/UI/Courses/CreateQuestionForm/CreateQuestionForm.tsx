@@ -81,7 +81,7 @@ const CreateQuestionForm: React.FC<CreateQuestionFormProps> = ({ onSubmit, onCan
                 value={answer}
                 onChange={e => setAnswer(e.target.value)}
             />
-            <CustomButton onClick={handleAddAnswer} color="blue">Добавить вариант ответа</CustomButton>
+            <CustomButton onClick={handleAddAnswer} color="black">Добавить вариант ответа</CustomButton>
             <div className={styles.controls}>
                 <CustomButton
                     onClick={() => {
@@ -90,7 +90,7 @@ const CreateQuestionForm: React.FC<CreateQuestionFormProps> = ({ onSubmit, onCan
                         setCorrectAnswer("");
                         setAnswers([]);
                     }}
-                    color="blue"
+                    color="black"
                 >
                     Сохранить вопрос
                 </CustomButton>

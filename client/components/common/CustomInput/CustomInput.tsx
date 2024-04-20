@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React from 'react';
 import styles from './CustomInput.module.sass';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -13,17 +13,21 @@ interface CustomInputProps {
     titleShow?: boolean
     error?: string | null
     name?: string
+    id?: string
+    onBlur?: () => void
 }
 
 const CustomInput = ({
-                                              placeholder,
-                                              value,
-                                              onChange,
-                                              title,
-                                              titleShow= true,
-                                              type= "text",
-                                              error = null,
-                                              name = ''
+    placeholder,
+    value,
+    onChange,
+    title,
+    titleShow= true,
+    type= "text",
+    error = null,
+    name = '',
+    id = '',
+    onBlur = () => {}
 } : CustomInputProps) => {
     const [checkBoxValue, setCheckBoxValue] = React.useState<boolean>(false);
     const onEyeButtonClick = () => {
@@ -58,6 +62,8 @@ const CustomInput = ({
                 title={title}
                 className={inputClass}
                 name={name}
+                id={id}
+                onBlur={onBlur}
             />
             {error !== null && <p className={styles.error}>{error}</p>}
         </div>
