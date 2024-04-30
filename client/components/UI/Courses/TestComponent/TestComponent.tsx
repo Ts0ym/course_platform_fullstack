@@ -85,9 +85,9 @@ const TestComponent: React.FC<TestComponentProps> = ({ questions, lessonId, user
 
     return (
         <div className={styles.testContainer}>
-            <h2>{currentQuestion.question}</h2>
+            <h2>{currentQuestion?.question}</h2>
             <div className={styles.optionsContainer}>
-                {currentQuestion.options.map((option, index) => (
+                {currentQuestion?.options.map((option, index) => (
                     <button
                         key={index}
                         onClick={() => handleOptionClick(option)}

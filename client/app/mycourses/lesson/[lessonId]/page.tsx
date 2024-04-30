@@ -58,7 +58,7 @@ const Page = ({ params: { lessonId } }: {params: {lessonId: string}}) => {
     })
 
     useEffect(() => {
-        if(!data?.isCompleted
+        if(!data?.isCompleted && data?.lesson?.type !== "quiz"
             &&
             !data?.lesson?.homework && user?._id && data?.lesson?._id && data?.lesson?.course?._id) {
             completeLessonMutation.mutate({

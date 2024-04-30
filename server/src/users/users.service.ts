@@ -114,7 +114,6 @@ export class UsersService {
     async enrollUserToCourse(userId: string, courseId: string){
         const user = await this.usersModel.findById(userId).exec()
         if (user && user.coursesEnrolled.includes(new Types.ObjectId(courseId))) {
-
             throw new Error('User is already enrolled in this course');
         }
         return await this.usersModel.findByIdAndUpdate(userId, {$push: {coursesEnrolled: new Types.ObjectId(courseId)}})
