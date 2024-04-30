@@ -1,38 +1,65 @@
-@use '../../../styles/colors' as *
+@use '@/styles/colors' as *
 
 .navbar
   display: flex
   width: 100%
   height: 4.5em
-  background-color: transparent
+  background-color: white
   align-items: center
   position: relative
+  top: 0
   z-index: 100
+  transition: all 0.2s ease
+  margin: 0 auto
+
   &::after
     content: ''
     position: absolute
     bottom: 0
-    left: 4%  // Отступ слева
-    right: 4% // Отступ справа
-    height: 1.5px
-    background-color: $color-grey
+    left: 4%
+    right: 4%
+    height: 1px
+    background-color: $color-lightblack
+
   @media (max-width: 600px)
-    height: 3em  // Уменьшенная высота для мобильных устройств
+    height: 3em
     &::after
-      left: 2%  // Уменьшенные отступы
+      left: 2%
       right: 2%
 
-
+.scrolled
+  position: sticky
+  box-shadow: 0 0.5em 1em rgba(0,0,0,0.1)
+  height: 4em
+  border-radius: 0.5em
+  width: 90%
+  background: $color-glass
+  backdrop-filter: blur(20px)
+  top: 1em
+  &::after
+    display: none
 
 .navBarImage
   display: flex
-  width: 17%
-  height: auto
+  width: 18em
+  height: 150%
+  position: relative
   img
     padding-top: 1em
   @media (max-width: 1000px)
     display: none
 
+
+.betaShield
+  position: absolute
+  bottom: 2em
+  right: 1em
+  display: flex
+  background-color: $color-lightgrey
+  padding: 0.3em
+  border-radius: 0.5em
+  font-weight: bold
+  color: $color-lightblack
 
 .navBarControls
   margin-left: auto
@@ -45,19 +72,46 @@
   display: flex
   align-items: center
 
+
 .navBarLink
+  position: relative
   margin-right: 1em
-  color: black
+  color: $color-lightblack
+  transition: all 0.1s ease-in-out
+  font-size: 0.95em
+  &:hover
+    &::before
+      width: 100%
+  &::before
+    content: ''
+    position: absolute
+    width: 0
+    height: 0.1em
+    bottom: -0.3em
+    left: 0
+    background-color: $color-lightblack
+    transition: width 0.2s ease-in-out
+    transform-origin: left center
+
+.navBarLogin
+  position: relative
+  margin-right: 4em
+  margin-left: 3em
+  color: $color-lightblack
+  transition: all 0.1s ease-in-out
+  font-size: 0.95em
+  font-weight: bold
 
 .userInfo
   display: flex
   align-items: center
-  //margin-right: 1em
-  //padding-right: 1em
   position: relative
   width: 17em
   height: 4.5em
+  margin-left: auto
   //border: 1px solid black
+  padding-right: 1em
+  transition: all 0.3s ease-in-out
 
 .userCredentials
   display: flex
@@ -65,41 +119,89 @@
   align-items: flex-end
   font-size: 0.9em
   justify-content: space-between
-  margin-right: 1em
-  margin-left: 4em
+  visibility: hidden
+  margin-left: 3em
+  opacity: 0
+  transition: all 0.2s ease-in-out
+  z-index: 102
   h1
-    color: black
+    color: $color-lightblack
     margin-bottom: 0.7em
+  .userEmail
+    color: $color-grey
 
 .userImage
-  background-color: black
   width: 3em
   height: 3em
-  border-radius: 100%
+  margin-left: auto
+  z-index: 102
+
 
 .dropdownMenu
   position: absolute
-  top: 100%
-  right: 0
-  background-color: white
+  top: 0.2em
+  right: 0.1em
   display: flex
   flex-direction: column
   width: 17em
-  border-radius: 0 0 0.3em 0.3em
   align-items: flex-end
   box-shadow: 0 0 1em 0.2em rgba(0,0,0,.1)
   z-index: 101
+  visibility: hidden
+  opacity: 0
+  transition: all 0.2s ease-in-out
+  border: 0.05em solid $color-bordergray
+  border-radius: 0.3rem
+  padding: 4.5em 0.3em 0.3em 0.3em
+  gap: 0.3em
+  background-color: white
 
 .dropdownItem
-  padding: 0.5em 1em
-  color: black
+  padding: 0.7em 1em
+  color: $color-lightblack
   width: 100%
   display: flex
   justify-content: flex-end
   height: 2.5em
-  border-radius: 0.3rem
   transition: all 0.3s ease-in-out
   align-items: center
-
+  cursor: pointer
+  border-radius: 0.5em
   &:hover
-    background-color: darken($color-lightgrey, 10%)
+    background-color: $color-lightgrey
+
+.exitItem
+  padding: 0.7em 1em
+  color: $color-red
+  width: 100%
+  display: flex
+  justify-content: flex-end
+  height: 2.5em
+  transition: all 0.2s ease-in-out
+  align-items: center
+  cursor: pointer
+  position: relative
+  border-radius: 0.5em
+  margin-top: 0.3em
+  &:hover
+    background-color: $color-lightgrey
+  &::before
+    content: ''
+    position: absolute
+    top: -0.3em
+    left: 50%            // Центрирование границы по горизонтали
+    transform: translateX(-50%)  // Сдвиг на 50% ширины границы назад, чтобы центрировать
+    width: 95%           // Пример ширины границы, измените по вашему усмотрению
+    height: 0.05em         // Высота границы
+    background-color: $color-bordergray
+
+
+
+.userInfo:hover .dropdownMenu
+  visibility: visible
+  opacity: 1
+
+
+.userInfo:hover .userCredentials
+  visibility: visible
+  opacity: 1

@@ -69,7 +69,35 @@ export interface IHomework{
     userId: IUser,
     content: string,
     grade: number,
-    sendTime: string
+    sendTime: string,
+    isRated: boolean,
+    assessment: string
+}
+
+export interface ICourseProgress{
+    _id: string,
+    user: string,
+    course: string,
+    completedLessons: string[]
+}
+
+export interface IBugReportData{
+    email: string,
+    description: string,
+    severity: number
+}
+
+export interface CompleteLessonDto{
+    userId: string,
+    lessonId: string,
+    courseId: string
+}
+
+export interface UpdateCourseDto{
+    title?: string,
+    description?: string,
+    tags?: string,
+    image?: File | null
 }
 
 export type LessonType = "text" | "video" | "quiz"

@@ -1,0 +1,65 @@
+@use '../../../../styles/colors' as *
+
+.homeworksList
+  display: flex
+  flex-direction: column
+  padding: 1em 0
+
+.title
+  font-size: 1.8em
+  font-weight: 600
+  margin: 0.5em 0 1em 0
+  color: $color-lightblack
+
+.controlsContainer
+  display: flex
+  gap: 0.8em
+
+.searchBarContainer
+  width: 20em
+  display: flex
+  flex-direction: column
+
+.sortControls
+  display: flex
+  position: relative
+
+.sortOptionsContainer
+  display: flex
+  flex-direction: column
+  width: 15em
+  position: absolute
+  left: 0
+  top: 2.5em
+  background-color: white
+  border: 0.1em solid $color-lightgrey
+  border-radius: 0.5em
+
+.sortButton
+  background: none
+  border: none
+  color: $color-lightblack
+  font-size: 1em
+  font-weight: 500
+
+.icon
+  margin-right: 0.3em
+
+.listHeader
+  display: flex
+  width: 100%
+  align-items: center
+  height: 3em
+  padding: 2em 1em
+  p
+    width: 20%
+    color: grey
+
+.emptyPlaceholder
+  display: flex
+  width: 100%
+  justify-content: center
+  margin: 1em 0
+
+.icon
+  margin-right: 0.3em

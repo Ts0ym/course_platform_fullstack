@@ -19,7 +19,7 @@ export class ThemesService {
     async create(dto: CreateThemeDto){
         const {courseId, ...rest } = dto
         const course = await this.courseModel.findById(dto.courseId)
-        const theme = await this.themeModel.create({...rest, lessons: []})
+        const theme = await this.themeModel.create({...rest, lessons: [], courseId: course._id})
         course.themes.push(theme._id)
         course.save()
         return theme

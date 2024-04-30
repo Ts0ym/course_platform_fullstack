@@ -80,4 +80,9 @@ export class LessonsController {
     delete(@Param('id') id : string){
         return this.lessonsService.delete(id)
     }
+
+    @Post("complete")
+    async completeLesson(@Body() body: {userId: string, lessonId: string, courseId: string}){
+        return await this.coursesProgressService.markLessonAsCompleted(body.userId, body.courseId, body.lessonId)
+    }
 }

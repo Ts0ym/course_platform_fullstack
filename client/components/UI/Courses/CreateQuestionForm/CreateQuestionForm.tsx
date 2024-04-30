@@ -3,7 +3,7 @@ import CustomInput from "@/components/common/CustomInput/CustomInput";
 import CustomButton from "@/components/common/CustomButton/CustomButton";
 import styles from './CreateQuestionForm.module.sass';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import {faPlus, faXmark} from "@fortawesome/free-solid-svg-icons";
 import {ILessonQuestion} from "@/types";
 
 interface AnswerListProps {
@@ -16,17 +16,17 @@ const AnswerList: React.FC<AnswerListProps> = ({ answers, onAnswerChange, onRemo
     <div className={styles.answersList}>
         {answers.map((ans, index) => (
             <div key={index} className={styles.answerItem}>
+                <FontAwesomeIcon
+                    icon={faXmark}
+                    onClick={() => onRemoveAnswer(index)}
+                    className={styles.removeButton}
+                />
                 <CustomInput
                     placeholder={`Ответ ${index + 1}`}
                     value={ans}
                     onChange={(e) => onAnswerChange(e, index)}
                     title={`Ответ ${index + 1}`}
                 />
-                <FontAwesomeIcon
-                    icon={faXmark}
-                    onClick={() => onRemoveAnswer(index)}
-                    className={styles.removeButton}/>
-                {/*<button onClick={() => onRemoveAnswer(index)} className={styles.removeButton}>Удалить</button>*/}
             </div>
         ))}
     </div>
@@ -37,7 +37,7 @@ interface CreateQuestionFormProps {
     onCancel: () => void;
 }
 
-const CreateQuestionForm: React.FC<CreateQuestionFormProps> = ({ onSubmit, onCancel }) => {
+const CreateQuestionForm = ({ onSubmit, onCancel } : CreateQuestionFormProps) => {
     const [question, setQuestion] = useState<string>("");
     const [correctAnswer, setCorrectAnswer] = useState<string>("");
     const [answer, setAnswer] = useState<string>("");
@@ -63,7 +63,7 @@ const CreateQuestionForm: React.FC<CreateQuestionFormProps> = ({ onSubmit, onCan
 
     return (
         <div className={styles.formContainer}>
-            <h2>Добавьте вопросы теста</h2>
+            <h2 className={styles.zoneTitle}>Добавьте вопросы теста</h2>
             <CustomInput
                 placeholder="Введите вопрос"
                 value={question}
@@ -74,27 +74,31 @@ const CreateQuestionForm: React.FC<CreateQuestionFormProps> = ({ onSubmit, onCan
                 value={correctAnswer}
                 onChange={e => setCorrectAnswer(e.target.value)}
             />
-            <h3 className={styles.answersTitle}>Варианты ответов:</h3>
+            <h3 className={styles.zoneTitle}>Варианты ответов:</h3>
             <AnswerList answers={answers} onAnswerChange={handleAnswerChange} onRemoveAnswer={handleRemoveAnswer} />
             <CustomInput
                 placeholder="Добавление варианта ответа"
                 value={answer}
                 onChange={e => setAnswer(e.target.value)}
             />
-            <CustomButton onClick={handleAddAnswer} color="black">Добавить вариант ответа</CustomButton>
+            <CustomButton onClick={handleAddAnswer} color="black"><FontAwesomeIcon icon={faPlus}/>Создать вариант ответа</CustomButton>
             <div className={styles.controls}>
-                <CustomButton
-                    onClick={() => {
-                        onSubmit({question, correctAnswer, options: answers});
-                        setQuestion("");
-                        setCorrectAnswer("");
-                        setAnswers([]);
-                    }}
-                    color="black"
-                >
-                    Сохранить вопрос
-                </CustomButton>
-                <CustomButton onClick={onCancel} color="red">Отмена</CustomButton>
+                <div>
+                    <CustomButton
+                        onClick={() => {
+                            onSubmit({question, correctAnswer, options: answers});
+                            setQuestion("");
+                            setCorrectAnswer("");
+                            setAnswers([]);
+                        }}
+                        color="black"
+                    >
+                        Сохранить вопрос
+                    </CustomButton>
+                </div>
+                <div>
+                    <CustomButton onClick={onCancel} color="red">Отмена</CustomButton>
+                </div>
             </div>
         </div>
     );

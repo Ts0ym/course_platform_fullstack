@@ -2,7 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {Course} from "./courses.schema";
 import {Model} from "mongoose";
-import {CreateCourseDto, EnrollUserDto} from "./courses.dto";
+import {CreateCourseDto, EnrollUserDto, UpdateCourseDto} from "./courses.dto";
 import {Theme} from "../themes/themes.schema";
 import {Lesson} from "../lessons/lessons.shema";
 import {FilesService, FileTypes} from "../files/files.service";
@@ -51,12 +51,37 @@ export class CoursesService {
         await this.courseModel.deleteOne({ _id: id });
     }
 
+    async updateCourse(id: string, dto: UpdateCourseDto): Promise<Course> {
+        const course = await this.courseModel.findById(id);
+        if (!course) {
+            throw new Error(`Course with id ${id} not found`);
+        }
+
+        // Обновление изображения, если оно предоставлено
+        if (dto.image) {
+            const imageFileName = await this.filesService.createFile(dto.image, FileTypes.IMAGE);
+            course.image = imageFileName;
+        }
+
+        // Обновление тегов, если они предоставлены
+        if (dto.tags) {
+            course.tags = JSON.parse(dto.tags);
+        }
+
+        // Обновление остальных полей
+        if (dto.title) course.title = dto.title;
+        if (dto.description) course.description = dto.description;
+
+        await course.save();
+        return course;
+    }
+
     async getOne(id: string){
         return await this.courseModel.findById(id).populate({
             path: 'themes',
             populate: {
                 path: 'lessons',
-                model: 'Lesson' // Модель урока
+                model: 'Lesson'
             }
         }).exec();
     }
@@ -66,7 +91,7 @@ export class CoursesService {
             path: 'themes',
             populate: {
                 path: 'lessons',
-                model: 'Lesson' // Модель урока
+                model: 'Lesson'
             }
         }).exec();
     }

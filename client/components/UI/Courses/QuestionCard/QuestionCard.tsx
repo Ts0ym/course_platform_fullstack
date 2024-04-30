@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import styles from './QuestionCard.module.sass';
 import { ILessonQuestion } from "@/types";
+import CustomButton from "@/components/common/CustomButton/CustomButton";
 
 interface QuestionCardProps {
     questionData: ILessonQuestion;
@@ -32,9 +33,11 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ questionData, onRemove, onR
                     </ul>
                 </div>
             </div>
-            <button onClick={onRemove} className={styles.removeButton}>
-                <FontAwesomeIcon icon={faTrash} />
-            </button>
+            <div className={styles.removeButtonContainer}>
+                <CustomButton onClick={onRemove} color={'white'}>
+                    <FontAwesomeIcon icon={faTrash} />
+                </CustomButton>
+            </div>
         </div>
     );
 };

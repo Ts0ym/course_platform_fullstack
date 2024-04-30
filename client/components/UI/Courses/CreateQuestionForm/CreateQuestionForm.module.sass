@@ -8,22 +8,36 @@
   box-shadow: 0 4px 8px rgba(0,0,0,0.1)
   background-color: white
   margin-bottom: 0.7em
+  width: 100%
 
 .answersList
   display: flex
   flex-direction: column
   gap: 0.5em
+  width: 100%
 
-.answersTitle
-  margin-bottom: 0.7em
+.zoneTitle
+  margin: 0.6em 0 1.2em 0
 
 .controls
   display: flex
   justify-content: space-between
-  margin-top: 20px
+  margin-top: 1em
 
 .answerItem
   display: flex
+  width: 100%
+  align-items: center
+  min-height: 1em
+  //border: 1px solid black
+  flex-direction: column
 
 .removeButton
   color: $color-red
+  margin-left: auto
+  //margin-bottom: -1em
+  font-size: 1.2em
+  cursor: pointer
+  transition: color 0.2s ease-in-out
+  &:hover
+    color: darken($color-red, 20%)

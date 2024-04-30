@@ -1,14 +1,19 @@
-import {useAppSelector} from "@/redux/hooks";
 import {useRouter} from "next/navigation";
+import {AuthService} from "@/services/authService";
+import {useEffect} from "react";
 
 const useRoleCheck = (role: string) => {
-    const user = useAppSelector(store => store.auth.user)
     const router = useRouter()
+    useEffect(() => {
+        const checkRole = async () => {
+            const response = await AuthService.checkAuth();
+            if (!response || response.role !== role) {
+                router.push('/');
+            }
+        };
 
-    if(user.role !== role){
-        router.push('/404')
-    }
-    console.log(user)
+        checkRole();
+    }, [role, router])
 }
 
 export default useRoleCheck

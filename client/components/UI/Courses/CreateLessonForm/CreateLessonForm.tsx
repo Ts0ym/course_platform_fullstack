@@ -11,15 +11,19 @@ import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import CreateQuestionForm from "@/components/UI/Courses/CreateQuestionForm/CreateQuestionForm";
 import QuestionCard from "@/components/UI/Courses/QuestionCard/QuestionCard";
 import CustomCheckbox from "@/components/common/CustomCheckbox/CustomCheckbox";
-import {Editor} from 'react-draft-wysiwyg';
 import { EditorState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { stateToHTML } from 'draft-js-export-html';
+import dynamic from "next/dynamic";
+import CustomTextBox from "@/components/common/ CustomTextBox/CustomTextBox";
 
 interface CreateLessonFormProps {
     onSubmit: (formData: any) => void
 }
-
+const Editor = dynamic(
+    () => import('react-draft-wysiwyg').then(mod => mod.Editor),
+    { ssr: false } // Отключаем серверный рендеринг для компонента Editor
+);
 const CreateLessonForm = ({ onSubmit } : CreateLessonFormProps) => {
 
     const [title, setTitle] = useState<string>("");
@@ -29,9 +33,10 @@ const CreateLessonForm = ({ onSubmit } : CreateLessonFormProps) => {
     const [textContent, setTextContent] = useState<string>("");
     const [quizQuestions, setQuizQuestions] = useState<ILessonQuestion[]>([])
     const [isCreateQuestionShow, setIsCreateQuestionShow] = useState<boolean>(false);
-    const [reward, setReward] = useState<string>("");
+    const [reward, setReward] = useState<string>("0");
     const [homework, setHomework] = useState<boolean>(false);
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
+    const [homeworkText, setHomeworkText] = useState<string>("");
 
     const onUploadChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
@@ -68,6 +73,10 @@ const CreateLessonForm = ({ onSubmit } : CreateLessonFormProps) => {
             case "quiz":
                 formData.append("questions", JSON.stringify(quizQuestions));
                 break;
+        }
+
+        if(homework){
+            formData.append("homeworkText", homeworkText);
         }
 
         return formData;
@@ -125,12 +134,14 @@ const CreateLessonForm = ({ onSubmit } : CreateLessonFormProps) => {
             />
             {
                 lessonType === "video"
-                && <FileUploader
-                    onFileSelect={onUploadChange}
-                    onFileDelete={() => setVideo(null)}
-                    fileValue={video}
-                    accept={'video/*'}
-                />
+                && <div className={styles.videoUploadContainer}>
+                    <FileUploader
+                        onFileSelect={onUploadChange}
+                        onFileDelete={() => setVideo(null)}
+                        fileValue={video}
+                        accept={'video/*'}
+                    />
+                </div>
             }
             {
                 lessonType === "text"
@@ -190,11 +201,24 @@ const CreateLessonForm = ({ onSubmit } : CreateLessonFormProps) => {
                 titleShow={true}
 
             />
-            <CustomCheckbox
-                label={"Нужно домашнее задание"}
-                value={homework}
-                onChange={(e) => setHomework(e.target.checked)}
-            />
+            {
+                lessonType !== "quiz" &&
+                <CustomCheckbox
+                    label={"Нужно домашнее задание"}
+                    value={homework}
+                    onChange={(e) => setHomework(e.target.checked)}
+                />
+            }
+            {
+                homework
+                && <CustomTextBox
+                    value={homeworkText}
+                    onChange={e => setHomeworkText(e.target.value)}
+                    title={"Добавьте текст домашнего задания"}
+                    titleShow={true}
+                    placeholder={"Текст домашнего задания"}
+                />
+            }
             <CustomButton
                 onClick={() => onSubmit(createFormData()) }
                 color={"black"}>Сохранить урок</CustomButton>

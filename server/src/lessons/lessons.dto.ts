@@ -9,5 +9,6 @@ export class CreateLessonDto{
     questions?: string;
     text?: string;
     homework: boolean;
+    homeworkText?: string;
     // videoUrl?: string;
 }

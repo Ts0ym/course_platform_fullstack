@@ -1,3 +1,4 @@
+@use '@/styles/colors' as *
 .authForm
   display: flex
   min-width: 30%
@@ -5,15 +6,16 @@
   flex-direction: column
   padding: 2em
   border-radius: 0.3rem
-  color: #8a8a8a
+  color: $color-grey
   align-items: center
+  border: 0.15em solid $color-lightgrey
   h1
-    color: black
+    color: $color-lightblack
     font-size: 2em
+    font-weight: bold
   @media (max-width: 600px)
     min-width: 80%
     padding: 1em
-
     font-size: 0.8em
 
 .inputsSection
@@ -24,8 +26,12 @@
   span
     cursor: pointer
     transition: all 0.3s ease-in-out
+    text-decoration: underline
+    text-decoration-thickness: 0.07em
+    text-underline-offset: 0.17em
+    color: $color-lightblack
     &:hover
-      color: #2b73be
+      color: $color-grey
 
 .title
   margin-bottom: 1em
@@ -38,6 +44,10 @@
 .forgotRedirect
   margin-top: 0.5em
   cursor: pointer
+  text-decoration: underline
+  text-decoration-thickness: 0.07em
+  text-underline-offset: 0.17em
+  color: $color-lightblack
   &:hover
-    color: #2b73be
+    color: $color-grey
 

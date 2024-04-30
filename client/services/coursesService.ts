@@ -1,5 +1,20 @@
 import $authApi from "@/http/authApi";
-import {CreateCourseDto, CreateHomeworkDto, CreateThemeDto, EditHomeworkDto, ICourse} from "@/types";
+import {
+    CompleteLessonDto,
+    CreateCourseDto,
+    CreateHomeworkDto,
+    CreateThemeDto,
+    EditHomeworkDto,
+    IBugReportData,
+    ICourse
+} from "@/types";
+import {toast} from "react-toastify";
+
+export interface TestAnswer {
+    question: string;
+    selectedOption: string;
+    isCorrect: boolean;
+}
 
 export class CoursesService {
     public static async getAllCourses(): Promise<ICourse[]> {
@@ -28,6 +43,16 @@ export class CoursesService {
         const response = await $authApi.post('/themes', createThemeDto)
     }
 
+    public static async deleteTheme(themeId: string) {
+        try {
+            const response = await $authApi.delete(`/themes/${themeId}`);
+            return response.data;
+        } catch (error) {
+            console.error('Error deleting theme:', error);
+            throw error;
+        }
+    }
+
     public static async addLessonToTheme(createLessonDto: FormData, onUploadProgress: (minValue: number, maxValue: number) => void){
 
         let apiPath = "/lessons"
@@ -50,7 +75,7 @@ export class CoursesService {
     }
 
     public static async getLastCourse(userId: string){
-        const response = await $authApi.get(`/courses/lastcourse/${userId}`)
+        const response = await $authApi.get(`/users/lastLesson/${userId}`)
         return response.data
     }
 
@@ -98,6 +123,140 @@ export class CoursesService {
             return response.data;
         } catch (error) {
             console.error('Error deleting homework:', error);
+            throw error;
+        }
+    }
+
+    public static async getAllHomeworks(){
+        try{
+            const response = await $authApi.get(`/homeworks`);
+            console.log(response.data)
+            return response.data
+        } catch (error) {
+            console.error('Error getting all homeworks:', error);
+            throw error;
+        }
+    }
+
+    public static async setLastLesson(userId: string, lessonId: string){
+        try{
+            const response = await $authApi.post('/users/lastlesson', {userId, lessonId})
+            return response.data
+        }catch(error){
+            throw error
+        }
+    }
+
+    public static async submitTestResults(dto: {
+        userId: string;
+        lessonId: string;
+        answers: TestAnswer[];
+        score: number;
+    }) {
+        try {
+            const response = await $authApi.post('/test-result', dto);
+            console.log('Test results submitted:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('Error submitting test results:', error);
+            throw error;
+        }
+    }
+
+    public static async getTestResult(userId: string, lessonId: string) {
+        try {
+            const response = await $authApi.get(`/test-result/completed`, {
+                params: { userId, lessonId }
+            });
+            console.log(response.data)
+            return response.data;
+        } catch (error) {
+            console.error('Error checking test completion:', error);
+            throw error;
+        }
+    }
+
+    public static async completeLesson(body: CompleteLessonDto){
+        try{
+            const response = await $authApi.post('lessons/complete', body)
+            return response.data
+        } catch (e) {
+            console.error(e)
+            throw e
+        }
+    }
+
+    public static async createBugReport(bugReportData: IBugReportData) {
+        try {
+            const response = await $authApi.post('/bugreports', bugReportData);
+            console.log('Bug report created:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('Error creating bug report:', error);
+            toast.error('Ошибка при создании баг-репорта.');
+            throw error;
+        }
+    }
+
+    public static async getAllBugReports() {
+        try {
+            const response = await $authApi.get('/bugreports');
+            console.log('All bug reports:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('Error retrieving bug reports:', error);
+            toast.error('Ошибка при получении баг-репортов.');
+            throw error;
+        }
+    }
+
+    public static async getHomeworkById(homeworkId: string) {
+        try {
+            const response = await $authApi.get(`/homeworks/${homeworkId}`);
+            return response.data;
+        } catch (error) {
+            console.error('Error retrieving homework:', error);
+            toast.error('Ошибка при получении домашнего задания.');
+            throw error;
+        }
+    }
+
+    public static async rateHomework(homeworkId: string, grade: number, assessment: string) {
+        try {
+            const response = await $authApi.post(`/homeworks/rate`, {
+                homeworkId,
+                grade,
+                assessment
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error rating homework:', error);
+            throw error;
+        }
+    }
+
+    static async updateCourse(courseId: string, courseData: any) {
+        try {
+            // FormData используется для отправки файлов и текстовых данных
+            const formData = new FormData();
+            Object.keys(courseData).forEach(key => {
+                if (key === 'image' && courseData[key] instanceof File) {
+                    formData.append(key, courseData[key], courseData[key].name);
+                } else if (typeof courseData[key] === 'object') {
+                    formData.append(key, JSON.stringify(courseData[key]));
+                } else {
+                    formData.append(key, courseData[key]);
+                }
+            });
+
+            const response = await $authApi.patch(`/courses/${courseId}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error updating course:', error);
             throw error;
         }
     }

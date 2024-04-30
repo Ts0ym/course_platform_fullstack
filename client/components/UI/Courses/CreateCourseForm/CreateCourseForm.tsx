@@ -76,10 +76,6 @@ const CreateCourseForm = () => {
         }
     }
 
-    const onFileSelect = (file: File[]) => {
-        setFormData(prevFormData => ({...prevFormData, image: file[0]}));
-    }
-
     const removeTag = (tagToRemove: string) => {
         setTags([...tags.filter(tag => tag !== tagToRemove)]);
     };
@@ -139,13 +135,14 @@ const CreateCourseForm = () => {
                     <div className={styles.addTagButtonContainer}>
                         <CustomButton
                             onClick={addTag}
-                            color={'blue'}
+                            color={'white'}
+                            outline
                         ><FontAwesomeIcon
                             icon={faArrowRight}/></CustomButton>
                     </div>
                 </div>
                 <CustomButton
-                    type="submit" color={"blue"}
+                    type="submit" color={"black"}
                     onClick={() => {}}>Создать курс</CustomButton>
             </form>
         </div>

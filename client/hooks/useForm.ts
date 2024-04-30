@@ -10,7 +10,9 @@ export interface FormErrors {
 
 export interface UseFormReturn {
     values: FormValues;
-    handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    handleChange: (event: React.ChangeEvent<HTMLInputElement>
+        | React.ChangeEvent<HTMLTextAreaElement>
+    | React.ChangeEvent<HTMLSelectElement>) => void;
     handleBlur: () => void;
     handleSubmit: (event: React.FormEvent<any>) => void;
     errors: FormErrors;
@@ -24,7 +26,9 @@ export function useForm(
     const [values, setValues] = useState<FormValues>(initialValues);
     const [errors, setErrors] = useState<FormErrors>({});
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>
+        | React.ChangeEvent<HTMLTextAreaElement>
+        | React.ChangeEvent<HTMLSelectElement>) => {
         const {id, value} = event.target;
         setValues({...values, [id]: value});
     }

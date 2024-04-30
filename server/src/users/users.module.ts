@@ -9,6 +9,7 @@ import {CourseProgress, CourseProgressSchema} from "../courses-progress/courses-
 import {CoursesService} from "../courses/courses.service";
 import {Course, CourseSchema} from "../courses/courses.schema";
 import {Lesson, LessonSchema} from "../lessons/lessons.shema";
+import {FilesService} from "../files/files.service";
 
 @Module({
   imports: [MongooseModule.forFeature([
@@ -17,7 +18,7 @@ import {Lesson, LessonSchema} from "../lessons/lessons.shema";
     {name: Course.name, schema: CourseSchema },
     {name: Lesson.name, schema: LessonSchema},
   ]), JwtModule.register({})],
-  providers: [UsersService, CoursesProgressService],
+  providers: [UsersService, CoursesProgressService, FilesService],
   controllers: [UsersController],
   exports: [UsersService]
 })

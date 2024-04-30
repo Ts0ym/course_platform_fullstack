@@ -1,8 +1,20 @@
-import {Body, Query, Controller, Delete, Get, Param, Post, UploadedFiles, UseInterceptors} from '@nestjs/common';
+import {
+    Body,
+    Query,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Post,
+    UploadedFiles,
+    UseInterceptors,
+    Patch,
+    UploadedFile, HttpStatus, HttpException
+} from '@nestjs/common';
 import {CoursesService} from "./courses.service";
-import {CreateCourseDto, EnrollUserDto, GetCourseProgressDto} from "./courses.dto";
+import {CreateCourseDto, EnrollUserDto, GetCourseProgressDto, UpdateCourseDto} from "./courses.dto";
 import {COURSES_COLLECTION_NAME} from "../constants";
-import {FileFieldsInterceptor} from "@nestjs/platform-express"
+import {FileFieldsInterceptor, FileInterceptor} from "@nestjs/platform-express"
 import {CoursesProgressService} from "../courses-progress/courses-progress.service";
 import {UsersService} from "../users/users.service";
 
@@ -17,7 +29,7 @@ export class CoursesController {
 
     @Get("progress")
     async getCourseProgress(@Query() dto: GetCourseProgressDto){
-        console.log(dto)
+        // console.log(dto)
         const progress= await this.coursesProgressService.getCourseProgress(dto)
         const course = await this.coursesService.getOne(dto.courseId)
         return {progress, course}
@@ -53,10 +65,18 @@ export class CoursesController {
         return this.coursesService.enrollUser(dto)
     }
 
-    @Get("lastcourse/:id")
-    async getLastCourse(@Param('id') id : string){
-        return await this.usersService.getLastCourse(id)
-
+    @Patch(':id')
+    @UseInterceptors(FileInterceptor('image'))  // Используйте FileInterceptor для загрузки изображений
+    async updateCourse(@Param('id') id: string, @Body() dto: UpdateCourseDto, @UploadedFile() image: Express.Multer.File) {
+        try {
+            if (image) {
+                dto.image = image;
+            }
+            const updatedCourse = await this.coursesService.updateCourse(id, dto);
+            return updatedCourse;
+        } catch (error) {
+            throw new HttpException('Failed to update the course', HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Post("lastcourse")

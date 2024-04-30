@@ -8,11 +8,18 @@ export const THEMES_SCHEMA_NAME = "Theme"
 export const LESSONS_COLLECTION_NAME = "lessons"
 export const LESSONS_SCHEMA_NAME = "Lesson"
 
+export const TEST_RESULTS_COLLECTION_NAME = "test-results"
+export const TEST_RESULTS_SCHEMA_NAME = "TestResult"
+
 export const COURSES_PROGRESS_SCHEMA_NAME = "CourseProgress"
 export const COURSES_PROGRESS_COLLECTION_NAME = "courses-progress"
 
 export const HOMEWORKS_SCHEMA_NAME = "Homework"
 export const HOMEWORKS_COLLECTION_NAME = "homeworks"
+
+export const BUGREPORTS_SCHEMA_NAME = "BugReports"
+export const BUGREPORTS_COLLECTION_NAME = "bugreports"
+
 export const JWT_ACCESS_SECRET_KEY = "209348jfoseifa90w3jf9wj3farj0293jfawseorf023924qwj"
 
 export const JWT_REFRESH_SECRET_KEY = "afjeiofj23489r834tuajerklgjse49ty039w45jywfwraif0w"

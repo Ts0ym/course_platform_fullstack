@@ -1,17 +1,19 @@
+@use '@/styles/colors' as *
+
 .circleBackground
   fill: none
-  stroke: #e6e6e6
+  stroke: $color-bordergray
   stroke-width: 0.6em
 
 .circleProgress
   fill: none
-  stroke: black
+  stroke: $color-lightblack
   stroke-width: 0.6em
   transform-origin: center
   transform: rotate(-90deg)
 
 .circleText
-  fill: black
+  fill: $color-lightblack
   font-size: 1.2rem
   text-anchor: middle
   alignment-baseline: central

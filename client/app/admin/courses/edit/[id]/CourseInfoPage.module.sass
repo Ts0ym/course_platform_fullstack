@@ -8,11 +8,48 @@
 
 .buttonContainer
   margin-bottom: 1em
-  width: 7em
+  width: 100%
+  display: flex
+  justify-content: space-between
+
+.icon
+  font-size: 0.7em
+  margin-right: 0.3em
+
 
 .courseMainInfo
   display: flex
   flex-direction: column
+
+
+.courseImageContainer
+  display: flex
+  //border: 1px solid black
+  padding: 1em 0
+  p
+    margin-bottom: 0.5em
+    color: $color-grey
+
+.courseImage
+  width: 20em
+  height: 20em
+  display: flex
+  border: 0.1em solid $color-bordergray
+  border-radius: 0.5em
+
+.uploadFileContainer
+  display: flex
+  flex-direction: column
+  margin-left: 1em
+  margin-top: auto
+  gap: 0.5em
+  width: 20%
+
+.enableEditImageButton
+  width: 3em
+
+.containerTitle
+    color: $color-lightblack
 
 .courseTitleContainer
   display: flex
@@ -61,6 +98,10 @@
 
 .courseContentContainer
   p
+    //color: $color-grey
     margin-top: 0.3em
     margin-bottom: 0.6em
 
+.addThemeBtnContainer
+  width: 15em
+  align-self: center

@@ -2,12 +2,10 @@ import React from 'react';
 import styles from './LessonList.module.sass';
 import {ILesson} from "@/types";
 import {
-    faChevronRight,
+    faChevronRight, faCircleCheck,
     faFileAlt,
     faQuestionCircle,
-    faTimes,
-    faVideo,
-    faXmark
+    faVideo
 } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useRouter} from "next/navigation";
@@ -27,16 +25,14 @@ const LessonList = ({lessons, completedLessonsIds, onExit} : {
             case 'quiz':
                 return faQuestionCircle;
             default:
-                return faQuestionCircle; // Иконка по умолчанию, если тип урока не определен
+                return faQuestionCircle;
         }
     };
 
     const router = useRouter();
     return (
         <div className={styles.lessonList}>
-
             <button className={styles.closeButton} onClick={() => onExit()}/>
-
             {
                 lessons.map((lesson, index) =>
                     <div
@@ -48,8 +44,14 @@ const LessonList = ({lessons, completedLessonsIds, onExit} : {
                             <FontAwesomeIcon
                                 icon={getLessonIcon(lesson.type)}
                                 className={styles.lessonIcon}/>
-                            <p>{lesson.title}</p>
+                            <p>{index + 1}. {lesson.title}</p>
                         </div>
+                        {
+                            completedLessonsIds?.includes(lesson._id) &&
+                            <FontAwesomeIcon
+                                icon={faCircleCheck}
+                                className={styles.completedIcon}/>
+                        }
                         <div>
                             <FontAwesomeIcon icon={faChevronRight}/>
                         </div>

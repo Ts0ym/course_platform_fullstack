@@ -43,7 +43,7 @@ const CustomInput = ({
     return (
         <div className={styles.inputSection}>
             {
-                titleShow &&
+                title !== '' &&
                 <p className={styles.title}>
                     {title}
                     {type === "password"
@@ -60,7 +60,7 @@ const CustomInput = ({
                 value={value}
                 onChange={onChange}
                 title={title}
-                className={inputClass}
+                className={styles.input}
                 name={name}
                 id={id}
                 onBlur={onBlur}

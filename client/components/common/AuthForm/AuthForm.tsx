@@ -1,3 +1,5 @@
+'use client'
+
 import {FormErrors, FormValues, useForm} from "@/hooks/useForm";
 import {AuthService} from "@/services/authService";
 import {login} from "@/redux/slices/authSlice";
@@ -151,7 +153,13 @@ const AuthForm = ({ type } : AuthFormProps) => {
                 }
                 {type === "login" &&
                     <div className={styles.redirects}>
-                        <p className={styles.loginRedirect}>Нет аккаунта? <span onClick={() => router.push("/auth/register")}>Зарегистрироваться</span></p>
+                        <p
+                            className={styles.loginRedirect}>
+                            Нет аккаунта?
+                            <span
+                                onClick={() => router.push("/auth/register")}>Зарегистрироваться
+                            </span>
+                        </p>
                         <p onClick={() => router.push("/forgot")} className={styles.forgotRedirect}>Забыли пароль?</p>
                     </div>
                 }
@@ -161,7 +169,7 @@ const AuthForm = ({ type } : AuthFormProps) => {
                     handleSubmit(e);
                     type === 'login' ? loginHandler() : registerHandler()
                 }}
-                color={"blue"}>
+                color={"black"}>
                 {type === "login" ? "Войти" : "Зарегистрироваться"}
             </CustomButton>
         </div>

@@ -7,8 +7,9 @@ interface CustomTextBoxProps {
     placeholder?: string;
     title?: string;
     titleShow?: boolean;
+    id?: string
 }
-const CustomTextBox = ({ value, onChange, placeholder = '', title = '', titleShow = false, titleShow: boolean } : CustomTextBoxProps) => {
+const CustomTextBox = ({ value, onChange, placeholder = '', title = '', titleShow = false, titleShow: boolean , id = ''} : CustomTextBoxProps) => {
     return (
         <div className={styles.CustomTextBoxContainer}>
             {titleShow && <p className={styles.textBoxTitle}>{title}</p>}
@@ -17,7 +18,7 @@ const CustomTextBox = ({ value, onChange, placeholder = '', title = '', titleSho
                 placeholder={placeholder}
                 className={styles.CustomTextBox}
                 onChange={onChange}
-
+                id={id}
             />
         </div>
     );

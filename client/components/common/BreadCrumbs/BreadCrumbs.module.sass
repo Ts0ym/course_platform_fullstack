@@ -1,17 +1,17 @@
-@use '../../../styles/colors' as *
+@use '@/styles/colors' as *
 
 .breadcrumbs
   display: flex
   align-items: center
   padding: 0.7em
-  background: #f8f8f8
+  background: $color-lightgrey
   border-radius: 0.3em
 
 .crumb
-  color: #5b5b5b
-  transition: all 0.2s ease-in-out
+  color: $color-grey
+  transition: all 0.1s ease-in-out
   &:hover
-    color: black
+    color: $color-lightblack
 
 .arrow
   font-size: 0.8rem

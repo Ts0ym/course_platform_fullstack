@@ -1,0 +1,101 @@
+@use '../../../../styles/colors' as *
+
+.form
+  width: 100%
+  padding: 1em
+  display: flex
+
+.sideInfo
+  display: flex
+  flex-direction: column
+  width: 20%
+  gap: 1em
+
+.infoContainer
+  display: flex
+  flex-direction: column
+  gap: 1em
+  h1
+    font-weight: bold
+    color: $color-lightblack
+    font-size: 1.2em
+  p
+    color: $color-grey
+
+.mainInfo
+  display: flex
+  flex-direction: column
+  width: 80%
+
+.title
+  color: $color-lightblack
+  font-size: 2em
+  font-weight: bold
+
+.showTextButton
+  cursor: pointer
+  margin: 1.5em 0
+  color: $color-blue
+  display: flex
+  align-items: center
+
+.icon
+  margin-left: 0.4em
+  font-size: 0.8em
+
+.homeworkText
+  color: $color-lightblack
+  line-height: 1.4
+
+.userDataContainer
+  display: flex
+  align-items: center
+
+.avatarContainer
+  width: 3em
+  height: 3em
+  margin-right: 0.7em
+
+.userInfoContainer
+  display: flex
+  flex-direction: column
+  gap: 0.7em
+  & > *:first-child
+    color: $color-lightblack
+
+.nameContainer
+  flex-wrap: nowrap
+  white-space: nowrap
+
+.contentContainer
+  margin: 1em 0
+  padding: 2em
+  background-color: $color-lightergrey
+  border-radius: 1em 1em 1em 0
+
+.studentInfo
+  display: flex
+  width: 100%
+  align-items: center
+  margin-bottom: 2em
+
+.sendDate
+  color: $color-grey
+  margin-left: 1em
+
+.rateContainer
+  width: 100%
+  border-top: 0.09em solid $color-bordergray
+  h1
+    color: $color-lightblack
+    font-size: 1.7em
+    font-weight: bold
+    margin: 1em 0
+
+.assessmentContainer
+  padding: 2em 0
+
+.buttonsContainer
+  display: flex
+
+

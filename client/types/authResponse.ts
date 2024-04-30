@@ -1,4 +1,4 @@
-import {IUser} from "@/redux/slices/authSlice";
+import {IUser} from "@/types/UsersTypes";
 
 export interface AuthResponse {
     accessToken: string;

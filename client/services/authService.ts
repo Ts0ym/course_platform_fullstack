@@ -45,14 +45,6 @@ export class AuthService {
             });
             localStorageService.setAccessToken(response.data.accessToken)
             localStorageService.setRefreshToken(response.data.refreshToken)
-
-    }
-
-    public static async test(){
-        try{
-            return $authApi.post("/test");
-        }catch (e) {
-            return e
-        }
+            return response.data
     }
 }

@@ -4,7 +4,7 @@ import styles from './ThemeCard.module.sass'
 import CustomInput from "@/components/common/CustomInput/CustomInput";
 import CustomButton from "@/components/common/CustomButton/CustomButton";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPlus} from "@fortawesome/free-solid-svg-icons";
+import {faFaceSadTear, faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {Button, Modal, ProgressBar} from "react-bootstrap";
 import CreateLessonForm from "@/components/UI/Courses/CreateLessonForm/CreateLessonForm";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
@@ -12,6 +12,7 @@ import {CoursesService} from "@/services/coursesService";
 import {NotificationsService} from "@/services/notificationsService";
 import {Id} from "react-toastify";
 import LessonCard from "@/components/UI/Courses/LessonCard/LessonCard";
+import EmptyPlaceholder from "@/components/common/EmptyPlaceholder/EmptyPlaceholder";
 
 interface ThemeCardProps {
     theme: ICourseTheme
@@ -21,6 +22,7 @@ const ThemeCard = ({ theme } : ThemeCardProps) => {
 
     const queryClient = useQueryClient()
     const [showModal, setShowModal] = React.useState(false);
+    const [showDeleteModal, setShowDeleteModal] = React.useState(false);
     const [themeTitle, setThemeTitle] = React.useState<string>(theme.title);
     const [themeDescription, setThemeDescription] = React.useState<string>(theme.description)
     const [currentUploadProgress, setCurrentUploadProgress] = React.useState<number>(0)
@@ -55,16 +57,40 @@ const ThemeCard = ({ theme } : ThemeCardProps) => {
         mutationKey: ['courses']
     })
 
+    const deleteThemeMutation = useMutation({
+        mutationFn: async (themeId: string) => {
+            await CoursesService.deleteTheme(themeId)
+        },
+        onSuccess: () => {
+            NotificationsService.showNotification( "Тема успешно удалена!", "success")
+            queryClient.invalidateQueries({queryKey: ['courses']});
+        },
+        onError: (error) => {
+            NotificationsService.showNotification( "Ошибка при создании урока!", "error")
+        },
+        mutationKey: ['courses']
+    })
+
     return (
         <>
+            <Modal
+                show={showDeleteModal}
+                onHide={() => setShowDeleteModal(false)}
+                size='lg'
+            >
+                <Modal.Body>
+                    Вы уверены, что хотите тему "{theme.title}"? (Действие нельзя отменить)
+                </Modal.Body>
+                <Modal.Footer>
+                    <CustomButton onClick={() => setShowDeleteModal(false)} color="white" outline>Отмена</CustomButton>
+                    <CustomButton onClick={() => deleteThemeMutation.mutate(theme._id.toString())} color="red" outline>Удалить</CustomButton>
+                </Modal.Footer>
+            </Modal>
             <Modal
                 show={showModal}
                 onHide={() => setShowModal(false)}
                 size='xl'
             >
-                <Modal.Header closeButton>
-                    <Modal.Title>Создание урока курса</Modal.Title>
-                </Modal.Header>
                 <Modal.Body>
                     { isUploadBarVisible
                         && <div>
@@ -78,11 +104,6 @@ const ThemeCard = ({ theme } : ThemeCardProps) => {
                     }
                     <CreateLessonForm onSubmit={(value) => addLessonMutation.mutate(value)}/>
                 </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>
-                        Отмена
-                    </Button>
-                </Modal.Footer>
             </Modal>
             <div className={styles.themeCard}>
                 <CustomInput
@@ -102,9 +123,22 @@ const ThemeCard = ({ theme } : ThemeCardProps) => {
                 <p className={styles.lessonsTitle}>Уроки темы:</p>
                 <div className={styles.themeLessons}>
                     {theme.lessons.length === 0
-                        ? <div className={styles.lessonsEmpty}><p>Тут пока пусто...</p></div>
+                        ? <EmptyPlaceholder/>
                         : theme.lessons.map((lesson, index) => <LessonCard lesson={lesson} key={index}/>)}
-                    <CustomButton onClick={() => {setShowModal(true)}} color={"blue"}><FontAwesomeIcon icon={faPlus}/> Добавить урок к теме</CustomButton>
+                    <div className={styles.buttonContainer}>
+                        <CustomButton
+                            onClick={() => {setShowModal(true)}}
+                            color={"white"}
+                            outline
+                        ><FontAwesomeIcon
+                            icon={faPlus}/> Добавить урок к теме</CustomButton>
+                        <CustomButton
+                            onClick={() => setShowDeleteModal(true)}
+                            color={"red"}
+                            outline
+                        ><FontAwesomeIcon
+                            icon={faTrash}/> Удалить тему</CustomButton>
+                    </div>
                 </div>
             </div>
         </>

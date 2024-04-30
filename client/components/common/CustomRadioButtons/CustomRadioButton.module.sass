@@ -1,0 +1,37 @@
+@use '@/styles/colors' as *
+.radio
+  display: flex
+  width: 100%
+  padding: 0.7em
+  align-items: center
+  justify-content: flex-start
+  transition: background-color 0.2s ease-in-out
+  &:hover
+    background-color: $color-lightgrey
+  input[type="radio"]
+    appearance: none
+    width: 1.3em
+    height: 1.3em
+    margin-right: 0.2em
+    border: 2px solid $color-lightblack
+    border-radius: 50%
+    background-color: white
+    cursor: pointer
+    position: relative // Основа для псевдоэлементов
+    &:before
+      content: ''
+      position: absolute
+      top: 50%
+      left: 50%
+      transform: translate(-50%, -50%) scale(0)
+      width: 50%  // Размер внутренней точки
+      height: 50% // Размер внутренней точки
+      background-color: $color-lightblack
+      border-radius: 50%
+      transition: transform 0.1s ease-in-out
+
+    &:checked:before
+      transform: translate(-50%, -50%) scale(1) // Показать внутреннюю точку при выборе
+
+.label
+  color: $color-lightblack

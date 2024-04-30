@@ -1,37 +1,29 @@
-import React, {useState} from 'react';
+import React, { useState, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import styles from './CoursesList.module.sass';
-import {CoursesService} from "@/services/coursesService";
-import {ICourse} from "@/types";
+import { CoursesService } from "@/services/coursesService";
 import CoursesCard from "@/components/UI/Courses/CoursesCard/CoursesCard";
 import SearchInput from "@/components/common/SearchInput/SearchInput";
 import CustomButton from "@/components/common/CustomButton/CustomButton";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons"
-import {useQuery} from "@tanstack/react-query";
-import {Button, Modal, Spinner} from "react-bootstrap";
-import CreateCourseForm from "@/components/UI/Courses/CreateCourseForm/CreateCourseForm";
+import { useQuery } from "@tanstack/react-query";
+import { Modal, Spinner } from "react-bootstrap";
+const CreateCourseForm = dynamic(() => import('@/components/UI/Courses/CreateCourseForm/CreateCourseForm'), { ssr: false });
+
 const CoursesList = () => {
-
-    const [showModal, setShowModal] = useState(false)
-    const {data, isLoading} = useQuery({
-        queryFn: () => CoursesService.getAllCourses(),
+    const [showModal, setShowModal] = useState(false);
+    const { data, isLoading } = useQuery({
+        queryFn: CoursesService.getAllCourses,
         queryKey: ['courses'],
-    })
-    const [searchQuery, setSearchQuery] = React.useState('')
-    const getFilteredCourses = (courses: ICourse[] | undefined, searchQuery: string) => {
-        if (!searchQuery) {return courses}
-        if (!courses) {return []}
+    });
+    const [searchQuery, setSearchQuery] = useState('');
 
-        const query = searchQuery.toLowerCase();
-
-        return courses.filter(course => {
-            const titleMatch = course.title.toLowerCase().includes(query);
-            const descriptionMatch = course.description.toLowerCase().includes(query);
-            return titleMatch || descriptionMatch;
-        });
-    }
-
-    const filteredCourses = getFilteredCourses(data, searchQuery);
+    const filteredCourses = useMemo(() => {
+        if (!searchQuery) return data;
+        const lowerQuery = searchQuery.toLowerCase();
+        return data?.filter(course => course.title.toLowerCase().includes(lowerQuery) || course.description.toLowerCase().includes(lowerQuery)) || [];
+    }, [data, searchQuery]);
 
     return (
         <>
@@ -40,12 +32,10 @@ const CoursesList = () => {
                     <Modal.Title>Создание курса</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <CreateCourseForm/>
+                    <CreateCourseForm />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>
-                        Отмена
-                    </Button>
+                    <CustomButton onClick={() => setShowModal(false)} color="white" outline>Отмена</CustomButton>
                 </Modal.Footer>
             </Modal>
 
@@ -56,21 +46,19 @@ const CoursesList = () => {
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onDeleteClick={() => setSearchQuery('')}
                     />
-                    <div>
-                        <CustomButton onClick={() => {
-                            setShowModal(true)
-                        }} color="black"><FontAwesomeIcon icon={faPlus}/> Добавить курс</CustomButton>
-                    </div>
+                    <div><CustomButton onClick={() => setShowModal(true)} color="black">
+                        <FontAwesomeIcon icon={faPlus} /> Добавить курс
+                    </CustomButton></div>
                 </div>
-                {
-                    isLoading
-                        ? <Spinner animation="border" variant="primary"/>
-                        : (filteredCourses && Array.isArray(filteredCourses))
-                            ? filteredCourses.map(course => <CoursesCard
-                                key={course._id}
-                                course={course}/>)
-                            : null
-                }
+                <div className={styles.coursesListContainer}>
+                    {isLoading && Array.isArray(filteredCourses)? (
+                        <Spinner animation="border" variant="primary" />
+                    ) : (
+                        Array.isArray(filteredCourses) && filteredCourses?.map(course => (
+                            <CoursesCard key={course._id} course={course} />
+                        ))
+                    )}
+                </div>
             </div>
         </>
     );

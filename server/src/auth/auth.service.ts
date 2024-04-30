@@ -62,7 +62,7 @@ export class AuthService {
         if(!user || user.refreshToken!== refreshToken) throw new HttpException('Доступ запрещен', HttpStatus.UNAUTHORIZED)
         const tokens = await this.getTokens(user.email, user.role)
         await this.usersService.updateRefreshToken(user._id.toString(), tokens.refreshToken)
-        return tokens
+        return {...tokens, role: user.role}
     }
 
     async activateAccount(activationToken: string){

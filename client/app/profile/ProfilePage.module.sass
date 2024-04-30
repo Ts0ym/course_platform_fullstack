@@ -1,0 +1,115 @@
+@use '@/styles/colors' as *
+
+.page
+  min-height: 90vh
+  display: flex
+  flex-direction: column
+  align-items: center
+  padding: 2em 4em
+
+.controlsContainer
+  display: flex
+  width: 100%
+  margin-bottom: 2em
+
+.mainContainer
+  width: 100%
+  border: 0.08em solid $color-bordergray
+  min-height: 70vh
+  border-radius: 0.5em
+  display: flex
+
+.infoSection
+  display: flex
+  flex-direction: column
+  width: 20%
+  border-right: 0.08em solid $color-bordergray
+
+.userInfoContainer
+  height: 45%
+  border-bottom: 0.08em solid $color-bordergray
+  display: flex
+  flex-direction: column
+  align-items: center
+  padding: 1em
+  gap: 0.7em
+  p
+    font-size: 1.2em
+
+.exitIcon
+  display: flex
+  align-self: flex-start
+  font-size: 1.4em
+  color: $color-red
+  transition: color 0.2s ease-in-out
+  &:hover
+    color: darken($color-red, 10%)
+
+.imageContainer
+  width: 10em
+  height: 10em
+  margin-bottom: 0.5em
+
+.editSection
+  display: flex
+  flex-direction: column
+  width: 80%
+  align-items: center
+  padding: 3em 1em
+  h1
+    font-size: 1.5em
+    font-weight: bold
+    margin-bottom: 2em
+
+.inputs
+  display: flex
+  width: 100%
+
+.leftContainer
+  width: 50%
+  display: flex
+  flex-direction: column
+  padding: 0 2em
+  h2
+    font-size: 1.4em
+    font-weight: bold
+    margin: 1em 0
+
+
+.rightContainer
+  width: 50%
+  display: flex
+  flex-direction: column
+  padding: 0 2em
+  h2
+    font-size: 1.4em
+    font-weight: bold
+    margin: 1em 0
+
+.socialLinkCard
+  display: flex
+  width: 100%
+  padding: 0.7em
+  background-color: $color-lightgrey
+  margin-bottom: 0.3em
+  justify-content: space-between
+  border-radius: 0.3em
+
+.deleteLinkIcon
+  transition: color 0.2s ease-in-out
+  &:hover
+    color: $color-red
+
+.addSocialLink
+  display: flex
+  align-items: center
+  gap: 0.3em
+
+.addSocialLinkButton
+  width: 4em
+
+.saveButtonContainer
+  margin-top: auto
+  margin-left: 2em
+  display: flex
+  align-self: flex-start

@@ -1,10 +1,10 @@
 import React from 'react';
 import styles from './ProgressCircle.module.sass';
 
-const ProgressCircle = ({ percent, isPercentVisible = false } : {percent: number, isPercentVisible?: boolean}) => {
+const ProgressCircle = ({ percent = 0, isPercentVisible = false } : {percent: number, isPercentVisible?: boolean}) => {
     const radius = 50;
     const circumference = 2 * Math.PI * radius;
-    const strokeDashoffset = circumference - (percent / 100) * circumference;
+    const strokeDashoffset = circumference - (percent / 100) * circumference || 0;
 
     return (
         <svg viewBox="0 0 120 120" preserveAspectRatio="xMidYMid meet" style={{width: '100%', height: '100%'}}>

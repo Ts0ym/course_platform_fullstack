@@ -1,11 +1,10 @@
-@use '../../../styles/colors' as *
+@use '@/styles/colors' as *
 
 .customButton
   padding: 1em
   border: none
   border-radius: 0.3rem
   font-size: 1em
-  //margin-bottom: 0.7em
   height: 2.8em
   transition: all 0.3s ease-in-out
   display: flex
@@ -13,12 +12,24 @@
   gap: 0.2em
   width: 100%
   justify-content: center
+  white-space: nowrap
 
 .redButton
   background-color: $color-red
   color: $color-white
   &:hover
     background-color: darken($color-red, 10%)
+  &.outlineButton
+    border: 0.03rem solid $color-red
+    background-color: transparent
+    color: $color-red
+    &:hover
+      background-color: darken(white, 10%)
+
+.outlineButton
+  border: 0.1px solid $color-bordergray
+  border-radius: 0.3rem
+  box-shadow: none
 
 .blueButton
   background-color: $color-lightblue
@@ -28,19 +39,15 @@
 
 .whiteButton
   background-color: white
-  box-shadow: 0 0 1em 0.1em rgba(0,0,0,.1)
-  color: $color-darkgrey
+  color: $color-lightblack
   &:hover
-    background-color: darken(white, 3%)
+    background-color: $color-lightgrey
 
 .blackButton
-  background-color: black
+  background-color: $color-lightblack
   color: white
   &:hover
-    background-color: lighten(black, 2%)
+    background-color: lighten($color-lightblack, 13%)
 
-
-.outlineButton
-  border: 0.1px solid $color-grey
-  border-radius: 0.3rem
-  box-shadow: none
+.shadowButton
+  box-shadow: 0 0 1em 0.1em rgba(0,0,0,.1)

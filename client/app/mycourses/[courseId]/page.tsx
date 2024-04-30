@@ -6,38 +6,37 @@ import {CoursesService} from "@/services/coursesService";
 import {useAppSelector} from "@/redux/hooks";
 import styles from './CourseContent.module.sass'
 import {Modal, ProgressBar} from "react-bootstrap";
-import {ICourseTheme} from "@/types";
+import {ICourse, ICourseProgress, ICourseTheme} from "@/types";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBook, faUnlock} from "@fortawesome/free-solid-svg-icons";
 import {API_URL} from "@/constants";
 import CourseContentThemeCard from "@/components/UI/Courses/CourseContentThemeCard/CourseContentThemeCard";
 import LessonList from "@/components/UI/Courses/LessonList/LessonList";
+import BreadCrumbs from "@/components/common/BreadCrumbs/BreadCrumbs";
+import CustomButton from "@/components/common/CustomButton/CustomButton";
+import {useRouter} from "next/navigation";
+import {getCourseProgress} from "@/utils/coursesDataUtils";
 
-const Page = ({params: {courseId}}: {params: {courseId: string}}) => {
+interface CourseWithProgress{
+    course: ICourse
+    progress: ICourseProgress
+}
+
+const CourseContentPage = ({params: {courseId}}: {params: {courseId: string}}) => {
 
     const user = useAppSelector(state => state.auth.user);
-    const {data, isPending, isError} = useQuery({
+    const {data : CourseWithProgress, isPending, isError} = useQuery({
         queryFn: () => CoursesService.getCoursesWithProgress(user._id, courseId),
         queryKey: ['courseWithProgress'],
     })
     const [show, setShow] = React.useState(false);
     const [currentTheme, setCurrentTheme] = React.useState<ICourseTheme | null>(null)
+    const router = useRouter()
 
     if (isPending) return <div>Loading...</div>;
-    if (isError || !data) return <div>Error occurred or data is not available</div>;
+    if (isError || !CourseWithProgress) return <div>Error occurred or data is not available</div>;
 
-    const { course , progress  } = data;
-
-    const getCourseProgress = () => {
-        try{
-            const totalLessons = getTotalLessons()
-            const completedLessons = getCompletedLessons()
-            return (completedLessons / totalLessons) * 100
-        }catch (e) {
-            return 0
-        }
-    }
-
+    const { course , progress  } = CourseWithProgress;
     const getTotalLessons = () => {
          return course?.themes.reduce((total: number, theme: ICourseTheme) => total + theme.lessons.length, 0)
     }
@@ -47,12 +46,16 @@ const Page = ({params: {courseId}}: {params: {courseId: string}}) => {
     }
 
     const getThemePercentage = (theme: ICourseTheme) => {
-        return theme.lessons.filter(lesson =>
+        return Math.round(theme.lessons.filter(lesson =>
             progress?.completedLessons.includes(lesson._id)
-        ).length;
+        ).length / theme.lessons.length * 100);
     }
 
     const handleClose = () => setShow(!show)
+    const breadcrumbs = [
+        {title: "Курсы", path: "/mycourses"},
+        {title: course?.title, path: "/mycourses/" + courseId}
+    ]
 
     return (
         <>
@@ -65,8 +68,17 @@ const Page = ({params: {courseId}}: {params: {courseId: string}}) => {
                 />
             </Modal.Body>
         </Modal>
+        <title>{course?.title}</title>
         <div className={styles.coursePage}>
             <div className={styles.courseHeader}>
+                <div className={styles.breadcrumbContainer}>
+                    <div className={styles.backButtonContainer}>
+                        <CustomButton onClick={() => router.back()} color={"white"} outline>Назад</CustomButton>
+                    </div>
+                    <div className={styles.breadcrumb}>
+                        <BreadCrumbs breadcrumbs={breadcrumbs}/>
+                    </div>
+                </div>
                 <div className={styles.courseHeaderInfo}>
                     <p>Курс</p>
                     <h1>{course?.title}</h1>
@@ -76,8 +88,8 @@ const Page = ({params: {courseId}}: {params: {courseId: string}}) => {
                         ))}
                     </div>
                     <div className={styles.progressContainer}>
-                        <p>{getCourseProgress()}%</p>
-                        <ProgressBar now={60}/>
+                        <p>{getCourseProgress(course, progress)}%</p>
+                        <ProgressBar now={getCourseProgress(course, progress)}/>
                     </div>
                     <div className={styles.infoCards}>
                         <div className={styles.infoCard}>
@@ -87,7 +99,7 @@ const Page = ({params: {courseId}}: {params: {courseId: string}}) => {
                         </div>
                         <div className={styles.infoCard}>
                             <FontAwesomeIcon icon={faUnlock} className={styles.infoCardIcon}/>
-                            <p><span>Доступен</span> <br/>
+                            <p><span>Доступен</span><br/>
                                 бессрочно</p>
                         </div>
                     </div>
@@ -106,7 +118,7 @@ const Page = ({params: {courseId}}: {params: {courseId: string}}) => {
                         <CourseContentThemeCard
                             theme={theme}
                             key={theme._id}
-                            percentComplete={getThemePercentage(theme)}
+                            percentComplete={getThemePercentage(theme) || 0}
                             onClick={() => {
                                 setCurrentTheme(theme)
                                 setShow(true)
@@ -120,4 +132,4 @@ const Page = ({params: {courseId}}: {params: {courseId: string}}) => {
     );
 };
 
-export default Page;
+export default CourseContentPage;

@@ -1,3 +1,5 @@
+@use '../../../../styles/colors' as *
+
 .lastCourseCard
   box-shadow: 0 0 1em 0.1em rgba(0,0,0,.1)
   border-radius: 1.5em
@@ -5,12 +7,17 @@
   padding: 1.2em
   width: 100%
   position: relative
-  //overflow: hidden
+  transition: all 0.4s ease-in-out
+  &:hover
+    transform: scale(1.01)
+    .courseImage
+      transform: scale(1.06)
+
 
 .title
   font-weight: bold
   font-size: 1.6rem
-  color: #333
+  color: $color-lightblack
 
 .progressCircleContainer
   width: 3.5em
@@ -26,9 +33,11 @@
   justify-content: space-between
   padding: 0.5em
   h2
+    color: $color-lightblack
     font-size: 1.3em
     font-weight: bold
   p
+    color: $color-lightblack
     font-size: 0.9em
 
 .courseInfo
@@ -53,6 +62,8 @@
   position: absolute
   right: -5em
   top: -1em
+  //border: 1px solid black
 
 .courseImage
   width: 25em
+  transition: all 0.5s ease-in-out

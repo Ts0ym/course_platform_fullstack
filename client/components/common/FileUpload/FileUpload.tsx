@@ -19,7 +19,7 @@ const FileUploader = ({ onFileSelect, onFileDelete, fileValue, title = "", title
 
     return (
         <div className={styles.fileUploader}>
-            {titleShow && <p className={styles.title}>{title}</p>}
+            {title !== "" && <p className={styles.title}>{title}</p>}
             <input
                 type="file"
                 accept={accept}

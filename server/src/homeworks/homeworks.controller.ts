@@ -1,6 +1,6 @@
-import {Body, Controller, Delete, Param, Post, Put} from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put} from '@nestjs/common';
 import {HomeworksService} from "./homeworks.service";
-import {CreateHomeworkDto, UpdateHomeworkDto} from "./homeworks.dto";
+import {CreateHomeworkDto, RateHomeworkDto, UpdateHomeworkDto} from "./homeworks.dto";
 
 @Controller('homeworks')
 export class HomeworksController {
@@ -19,6 +19,31 @@ export class HomeworksController {
     @Delete('/:id')
     async deleteHomework(@Param('id') id: string) {
         return this.homeworksService.deleteHomework(id);
+    }
+
+    @Get()
+    async getHomeworks(){
+        return this.homeworksService.getAllUnratedHomeworks();
+    }
+
+    @Get('/:id')
+    async getHomework(@Param('id') id: string) {
+        return this.homeworksService.getHomeworkById(id);
+    }
+
+    @Post('rate')
+    async rateHomework(@Body() rateHomeworkDto: RateHomeworkDto) {
+        try {
+            const result = await this.homeworksService.rateHomework(
+                rateHomeworkDto
+            );
+            return result;
+        } catch (error) {
+            throw new HttpException({
+                status: HttpStatus.INTERNAL_SERVER_ERROR,
+                error: 'There was a problem rating the homework',
+            }, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

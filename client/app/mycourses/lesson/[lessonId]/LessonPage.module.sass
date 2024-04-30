@@ -1,3 +1,5 @@
+@use '../../../../styles/colors' as *
+
 .lessonPage
   padding: 2em
   min-height: 100vh
@@ -5,17 +7,76 @@
   flex-direction: column
   align-items: center
 
-
 .header
+  margin-top: 1em
   display: flex
   width: 100%
   align-items: center
-  justify-content: space-between
+  position: sticky
+  z-index: 3
+  top: 0.5em
+  border-radius: 10em
+  background-color: white
+  padding: 1em 3em
+  border: 0.01em solid $color-bordergray
+  box-shadow: 0 0 1em 0.1em rgba(0,0,0,.1)
+
+.bookIcon
+  font-size: 2.5em
+  margin-right: 0.3em
+
+.buttonContainer
+  margin-right: 1em
+
+.lessonsIcon
+  font-size: 1.3em
+
+.upButton
+  font-size: 1.4em
+  border-radius: 100%
+  width: 2.3em
+  height: 2.3em
+  display: flex
+  align-items: center
+  justify-content: center
+  transition: background-color 0.2s ease-in-out
+  margin-left: 0.5em
+  font-weight: lighter
+  &:hover
+    background-color: $color-lightgrey
+
+.progressContainer
+  //width: 6em
+  display: flex
+  align-items: center
+  margin-left: auto
+  height: 100%
+
+.progressTitles
+  height: 100%
+  display: flex
+  flex-direction: column
+  gap: 0.6em
+  align-items: flex-end
+  margin-right: 0.5em
+  p
+    &:first-child
+      color: $color-lightblack
+    &:nth-child(2)
+      color: $color-grey
+
+.progressBarContainer
+  display: flex
+  height: 3.2em
 
 .lessonTitle
-  font-size: 2em
+  font-size: 1.1em
   font-weight: bold
   margin-top: 0.5em
+  color: $color-lightblack
+
+.lessonInfoContainer
+  color: $color-grey
 
 .navButtons
   display: flex
@@ -31,12 +92,14 @@
 .lessonDescription
   font-size: 1.1em
   margin: 2em 0
-  color: black
+  color: $color-lightblack
   line-height: 1.4
   flex-wrap: wrap
   word-break: break-all
   justify-content: flex-start
-
+  border-bottom: 0.1em solid $color-bordergray
+  padding-bottom: 1.5em
+  width: 100%
 
 .videoContainer
   margin-top: 2em
@@ -53,12 +116,14 @@
   display: flex
   justify-content: flex-start
   width: 100%
+  min-height: 40vh
 
   h1, h2, h3, h4, h5, h6
-    color: #4A4A4A
+    color: $color-lightblack
 
   p
     margin-bottom: 0.5em
+    color: $color-lightblack
 
   strong
     font-weight: bold
@@ -81,14 +146,62 @@
   li
     margin-bottom: 0.5em
 
+.quizContainer
+  display: flex
+  flex-direction: column
+  align-items: center
+  gap: 1em
+  min-height: 30em
+  justify-content: center
+  h1
+    color: $color-lightblack
+    font-weight: bold
+    font-size: 2em
+  p
+    color: $color-grey
+    margin-bottom: 1.5em
+
+.quizIcon
+  color: $color-blue
+  font-size: 3em
+  border: 0.2em solid $color-blue
+  border-radius: 100%
+  padding: 0.1em
+
+.completedIcon
+  color: $color-green
+  font-size: 3em
+  border-radius: 100%
+  padding: 0.1em
 
 .homeworkContainer
   display: flex
   width: 100%
   flex-direction: column
   h1
+    display: flex
+    align-items: center
     font-size: 2em
     font-weight: bold
     margin: 1em 0
+
+.homeworkIcon
+  color: $color-blue
+  margin-right: 0.3em
+
+.homeworkText
+  line-height: 1.5
+  font-size: 1.1em
+  flex-direction: column
+  display: flex
+  justify-content: flex-start
+  width: 100%
+  margin-bottom: 2em
+  color: $color-lightblack
+
+.nextButtonContainer
+  width: 15em
+  justify-self: center
+  margin-top: 2em
 
 

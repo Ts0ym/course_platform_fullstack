@@ -55,7 +55,5 @@ export class CoursesProgressService {
 
         return courseProgress;
     }
-
-
 }
 

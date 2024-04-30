@@ -5,7 +5,7 @@
 
 .courseHeader
   margin-top: 1em
-  background: linear-gradient(to bottom, rgba(245, 245, 245, 0) 0%, #f5f5f5 100%)
+  background: linear-gradient(to bottom, rgba(245, 245, 245, 0) 0%, $color-lightgrey 100%)
   display: flex
   width: 100%
   min-height: 30vh
@@ -13,6 +13,27 @@
   justify-content: space-between
   overflow: hidden
   align-items: center
+  flex-direction: column
+
+.backButtonContainer
+  flex-shrink: 0
+// Предотвращает сжатие кнопки
+
+.breadcrumb
+  position: absolute
+  left: 50%
+  transform: translateX(-50%)
+  width: auto
+
+.breadcrumbContainer
+  display: flex
+  position: relative
+  align-items: center
+  justify-content: flex-start
+  width: 100%
+  padding: 0 2em
+  //height: 50px
+// Пример высоты, установите свою в зависимости от содержимого
 
 .courseHeaderInfo
   display: flex
@@ -21,13 +42,15 @@
   padding: 2.5em
   gap: 0.8em
   width: 30%
+  align-self: flex-start
   p
-    font-weight: 200
-    color: black
-    font-size: 1.3em
+    font-weight: 100
+    color: $color-lightblack
+    font-size: 1.5em
   h1
     font-weight: bold
     font-size: 2em
+    color: $color-lightblack
 
 .tagsContainer
   display: flex
@@ -63,17 +86,19 @@
 
 
 .infoCardIcon
-  background-color: $color-lightgrey
+  background-color: white
+  border: 1px solid $color-grey
   border-radius: 100%
   font-size: 1.2em
   padding: 0.8em
+  width: 1.3em
+  height: 1.3em
 
 .imageContainer
   position: absolute
   right: -10em
   bottom: -10em
-  //display: flex
-  //border: 1px solid black
+
 
 .courseImage
   width: 35em

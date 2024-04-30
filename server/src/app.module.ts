@@ -13,6 +13,8 @@ import { MailModule } from './mail/mail.module';
 import {ServeStaticModule} from "@nestjs/serve-static";
 import { CoursesProgressModule } from './courses-progress/courses-progress.module';
 import { HomeworksModule } from './homeworks/homeworks.module';
+import { TestResultModule } from './test-result/test-result.module';
+import { BugreportsModule } from './bugreports/bugreports.module';
 import * as path from 'path';
 
 @Module({
@@ -30,6 +32,8 @@ import * as path from 'path';
           rootPath: path.resolve(__dirname, '..', 'static'),
       }),
       HomeworksModule,
+      TestResultModule,
+      BugreportsModule,
 
   ],
   controllers: [AppController],

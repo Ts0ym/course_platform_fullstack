@@ -19,6 +19,12 @@ export class Homework {
     @Prop({required: false, default: Date.now})
     sendTime: Date
 
+    @Prop({required: false})
+    assessment: string
+
+    @Prop({required: false})
+    isRated: boolean
+
 }
 
 export type HomeworkDocument = Homework & Document;

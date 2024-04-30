@@ -1,12 +1,15 @@
 @use '../../../../styles/colors' as *
 
 .lessonCard
-  padding: 0.3rem
+  padding: 0.4rem
   display: flex
   justify-content: space-between
   align-items: center
   min-height: 1.4rem
-  border-bottom: 1px solid $color-lightgrey // Добавление горизонтальной черты
+  border-bottom: 0.08rem solid $color-bordergray // Добавление горизонтальной черты
+
+.lessonIcon
+  color: $color-lightblack
 
 .lessonInfo
   display: flex
@@ -19,7 +22,6 @@
     border-radius: 0.2rem
     background-color: $color-lightgrey
 
-
 .controlsContainer
   display: flex
 
@@ -27,16 +29,19 @@
   margin-left: 1rem
   transition: color 0.2s ease-in-out
   cursor: pointer
+  color: $color-lightblack
   &:hover
     color: $color-red
 
 .lessonEdit
   transition: color 0.2s ease-in-out
   cursor: pointer
+  color: $color-lightblack
   &:hover
     color: $color-blue
 
 .lessonTitle
   font-weight: bold
+  color: $color-lightblack
 
 

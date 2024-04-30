@@ -1,13 +1,31 @@
+@use '../../../../styles/colors' as *
+
 .coursesList
   display: flex
   flex-direction: column
   align-items: center
-  gap: 0.5em
   padding: 1em 0
 
+.title
+  align-self: start
+  font-weight: bold
+  font-size: 2em
+  margin: 1em 0.5em
+  color: $color-grey
+  span
+    color: $color-lightblack
+
+.coursesListContainer
+  display: flex
+  width: 100%
+  flex-direction: column
+  margin-top: 0.5em
+  gap: 0.5em
+
+.buttonContainer
+  width: 8em
 
 .controlsContainer
-
   display: flex
   justify-content: space-between
   width: 100%

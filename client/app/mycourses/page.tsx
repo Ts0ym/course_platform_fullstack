@@ -40,7 +40,7 @@ const Page = () => {
                 LastCourseData &&
                 <div className={styles.lastCourseContainer}>
                     <h1 className={styles.sectionHeader}>Последний курс</h1>
-                    <LastCourseCard course={LastCourseData.course} progress={LastCourseData.progress}/>
+                    <LastCourseCard course={LastCourseData.course} progress={LastCourseData.progress} lesson={LastCourseData.lesson}/>
                 </div>
             }
             <div className={styles.allMyCoursesContainer}>

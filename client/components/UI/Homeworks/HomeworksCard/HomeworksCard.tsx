@@ -9,7 +9,10 @@ import {useQueryClient} from "@tanstack/react-query";
 import CustomTextBox from "@/components/common/ CustomTextBox/CustomTextBox";
 import CustomButton from "@/components/common/CustomButton/CustomButton";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faHourglassStart} from "@fortawesome/free-solid-svg-icons";
+import {faCircleCheck, faHourglassStart, faStar} from "@fortawesome/free-solid-svg-icons";
+import AvatarContainer from "@/components/common/AvatarContainer/AvatarContainer";
+import {format} from "date-fns";
+import {ru} from "date-fns/locale";
 
 const HomeworksCard = ({ homework } : { homework: IHomework}) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -47,23 +50,23 @@ const HomeworksCard = ({ homework } : { homework: IHomework}) => {
     return (
         <div className={styles.card}>
             <div className={styles.userPicture}>
+                <AvatarContainer avatarPath={homework?.userId?.avatar || ''} border/>
             </div>
             <div className={styles.infoContainer}>
                 <div className={styles.homeworkInfo}>
                     <p className={styles.name}>{homework.userId.name}</p>
                     <p className={styles.name}>{homework.userId.surname}</p>
-                    <p className={styles.date}>{intlFormatDistance(
-                        new Date(homework.sendTime),
-                        Date.now(),
-                        {locale: 'ru'}
-                    )}</p>
-                    <div className={styles.controls}>
-                        <button className={styles.controls} onClick={handleEdit}>Редактировать</button>
-                        <button className={styles.controls} onClick={() => removeHomeworkMutation.mutate()}>Удалить</button>
-                    </div>
+                    <p className={styles.date}>{format(homework.sendTime, "d MMMM 'в' HH:mm", { locale: ru })}</p>
+                    {
+                        homework.isRated === false &&
+                        <div className={styles.controls}>
+                            <button className={styles.controls} onClick={handleEdit}>Редактировать</button>
+                            <button className={styles.controls} onClick={() => removeHomeworkMutation.mutate()}>Удалить</button>
+                        </div>
+                    }
                 </div>
                 {isEditing ? (
-                    <>
+                    <div className={styles.editContainer}>
                         <CustomTextBox
                             value={editedContent}
                             onChange={(e) => setEditedContent(e.target.value)}
@@ -77,22 +80,44 @@ const HomeworksCard = ({ homework } : { homework: IHomework}) => {
                             <CustomButton
                                 onClick={handleCancel}
                                 color={"white"}
+                                outline
                             >Отменить</CustomButton>
                         </div>
-                    </>
+                    </div>
                 ) : (
                     <p className={styles.homeworkContent}>
                         {homework.content}
                     </p>
                 )}
+                {
+                    homework.assessment !== '' && homework.isRated
+                    &&  <div className={styles.assessment}>
+                            Комментарий преподавателя
+                            <p>{homework.assessment}</p>
+                        </div>
+                }
             </div>
             <div className={styles.homeworkGrade}>
-                {homework.grade === 0 && <p>
+                {!homework.isRated
+                    ?
+                <p className={styles.unratedSign}>
+                    Задание ожидает оценки
                     <FontAwesomeIcon
                         icon={faHourglassStart}
-                        className={styles.timeIcon}/>
-                    Задание ожидает оценки
-                </p>}
+                        className={styles.icon}/>
+                </p>
+                :
+                    <p className={styles.ratedSign}>
+                        Задание оценено
+                        <FontAwesomeIcon icon={faCircleCheck} className={styles.icon}/>
+                    </p>
+                }
+                {
+                    homework.isRated &&
+                    <p className={styles.grade}>
+                        Ваша оценка {homework.grade} <FontAwesomeIcon icon={faStar} className={styles.starIcon}/>
+                    </p>
+                }
             </div>
         </div>
     );

@@ -47,7 +47,22 @@ export class FilesService {
         }
     }
 
-    async deleteFile(){
+    async deleteFile(fileName, fileType: FileTypes): Promise<void> {
+        try {
+            // Определение пути к файлу
+            const uploadPath = path.resolve(__dirname, '..', '..', 'static', fileType);
+            const filePath = path.join(uploadPath, fileName);
 
+            // Проверка существования файла
+            if (!fs.existsSync(filePath)) {
+                throw new Error('Файл не найден');
+            }
+
+            // Удаление файла
+            await fs.promises.unlink(filePath);
+
+        } catch (e) {
+            throw new HttpException(`Ошибка при удалении файла: ${e.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

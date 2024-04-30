@@ -6,13 +6,17 @@
   border-radius: 1em
   overflow: hidden
   box-shadow: 0 0 1em 0.1em rgba(0,0,0,.1)
+  border: 0.05em solid $color-bordergray
   width: auto
   height: 15em
-  padding: 1em
+  padding: 0.8em
   position: relative
   transition: all 0.3s ease-in-out
   &:hover
-    transform: scale(1.05)
+    transform: translate(0, -0.6em)
+    .courseImage
+      transform: scale(1.2)
+
 
 .content
   padding: 1rem
@@ -24,13 +28,14 @@
   border-radius: 0.3em
   p
     color: $color-darkgrey
-    margin-top: 0.2em
+    margin-top: 0.4em
 
 .tags
   display: flex
   width: 100%
   gap: 0.3em
   flex-wrap: wrap
+  margin-top: 0.7em
 
 .tag
   background-color: $color-lightgrey
@@ -41,16 +46,31 @@
   align-items: center
   justify-content: center
 
+
 .title
   font-weight: bold
   font-size: 1.6rem
-  color: #333
+  color: $color-lightblack
+
+.info
+  display: flex
+  flex-direction: column
+  //border: 1px solid black
+
 
 .imageContainer
   position: absolute
-  left: 15em
-  bottom: -5em
+  left: 60%
+  bottom: -15%
+  //border: 1px solid black
+  width: 60%
 
 .courseImage
+  transition: all 0.3s ease-in-out
   width: 20em
+
+.bottomContainer
+  p
+    color: $color-lightblack
+    font-weight: 200
 

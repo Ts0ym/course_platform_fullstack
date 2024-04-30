@@ -11,6 +11,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faFile, faList} from "@fortawesome/free-solid-svg-icons";
 import {Id} from "react-toastify";
 import {NotificationsService} from "@/services/notificationsService";
+import Image from "next/image";
 
 export interface CourseCardProps {
     course: ICourse;
@@ -44,25 +45,23 @@ const CoursesCard: FC<CourseCardProps> = ({ course }) => {
     return (
         <>
             <Modal show={showModal} onHide={() => setShowModal(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Удаление курса</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>Удалить курс? (Это действие нельзя отменить)</Modal.Body>
+                <Modal.Body>Удалить курс "{course.title}"? (Это действие нельзя отменить)</Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>
+                    <CustomButton color={"white"} outline onClick={() => setShowModal(false)}>
                         Отмена
-                    </Button>
-                    <Button variant="primary" onClick={() => {
+                    </CustomButton>
+                    <CustomButton color={"red"} outline onClick={() => {
                         setShowModal(false)
                         deleteMutation.mutate(course._id)
                     }}>
                         Удалить
-                    </Button>
+                    </CustomButton>
+
                 </Modal.Footer>
             </Modal>
             <div className={styles.courseCard}>
                 <div className={styles.courseImage}>
-                    <img src={API_URL + "image/" + course.image} alt={"image"}/>
+                    <Image src={API_URL + "image/" + course.image} alt={"image"} width={200} height={200}/>
                 </div>
                 <div className={styles.infoContainer}>
                     <div className={styles.courseInfo}>
@@ -73,8 +72,8 @@ const CoursesCard: FC<CourseCardProps> = ({ course }) => {
                         </div>
                     </div>
                     <div className={styles.courseButtons}>
-                        <CustomButton onClick={() => router.push(`admin/courses/edit/${course._id}`)} color={"black"}>Редактировать</CustomButton>
-                        <CustomButton onClick={() => setShowModal(true)} color={"red"}>Удалить</CustomButton>
+                        <CustomButton onClick={() => router.push(`admin/courses/edit/${course._id}`)} color={"white"} outline>Редактировать</CustomButton>
+                        <CustomButton onClick={() => setShowModal(true)} color={"red"} outline>Удалить</CustomButton>
                     </div>
                 </div>
             </div>

@@ -15,3 +15,10 @@ export class GetCourseProgressDto{
     readonly userId: string
 }
 
+export class UpdateCourseDto {
+    title?: string;
+    description?: string;
+    tags?: string;
+    image?: Express.Multer.File;
+}
+

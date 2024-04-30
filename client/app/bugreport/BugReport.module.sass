@@ -1,0 +1,49 @@
+@use '../../styles/colors' as *
+
+.page
+  display: flex
+  min-height: 90vh
+  align-items: center
+  flex-direction: column
+
+.button
+  display: flex
+  align-self: flex-start
+  margin: 1em
+
+.form
+  display: flex
+  flex-direction: column
+  border: 0.1em solid $color-lightgrey
+  padding: 2em
+  min-width: 50em
+  gap: 1em
+  border-radius: 0.3em
+  h1
+    color: $color-lightblack
+    font-size: 2em
+    font-weight: bold
+    align-self: center
+    margin-bottom: 1em
+
+.icon
+  font-size: 2em
+  color: $color-grey
+
+.successContainer
+  display: flex
+  align-items: center
+  flex-direction: column
+  margin-top: auto
+  margin-bottom: auto
+  h1
+    color: $color-lightblack
+    font-size: 2em
+    font-weight: bold
+    align-self: center
+    margin-bottom: 1em
+
+.successIcon
+  font-size: 3em
+  color: $color-green
+  margin-bottom: 1em

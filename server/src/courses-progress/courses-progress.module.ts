@@ -4,12 +4,18 @@ import { CoursesProgressController } from './courses-progress.controller';
 import {MongooseModule} from "@nestjs/mongoose";
 import {CourseProgress, CourseProgressSchema} from "./courses-progress.schema";
 import {Lesson, LessonSchema} from "../lessons/lessons.shema";
+import {Theme, ThemeSchema} from "../themes/themes.schema";
+import {Course, CourseSchema} from "../courses/courses.schema";
+import {User, UserSchema} from "../users/users.schema";
 
 @Module({
   imports: [
       MongooseModule.forFeature([
         { name: CourseProgress.name, schema: CourseProgressSchema },
-        { name: Lesson.name, schema: LessonSchema }
+        { name: Lesson.name, schema: LessonSchema },
+        { name: Theme.name, schema: ThemeSchema },
+        { name: Course.name, schema: CourseSchema },
+        { name: User.name, schema: UserSchema }
       ])
   ],
   providers: [CoursesProgressService],

@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import {LESSONS_COLLECTION_NAME} from "../constants";
+import {Document, Types} from 'mongoose';
+import {LESSONS_COLLECTION_NAME, THEMES_SCHEMA_NAME} from "../constants";
+import {Theme} from "../themes/themes.schema";
 
 export enum LessonType {
     Text = 'text',
@@ -34,6 +35,12 @@ export class Lesson {
 
     @Prop({ required: true })
     homework: boolean
+
+    @Prop({type: Types.ObjectId || Theme, ref: THEMES_SCHEMA_NAME})
+    themeId: Theme;
+
+    @Prop({ required: false })
+    homeworkText?: string
 }
 
 export interface LessonQuestion{
