@@ -7,7 +7,7 @@ async function bootstrap() {
   const PORT = process.env.PORT || 5005
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: 'http://localhost:3000', // Укажите адрес вашего фронтенд-приложения
+    origin: process.env.ORIGIN || 'http://localhost:3000', // Укажите адрес вашего фронтенд-приложения
     credentials: true
   })
   app.useGlobalFilters(new AllExceptionsFilter());
