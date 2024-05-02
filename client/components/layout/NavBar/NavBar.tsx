@@ -31,7 +31,7 @@ const NavBar = () => {
     const scrollingPathExceptions: string[] = ['/admin', '/lesson']
 
     const {data, isPending, error} = useQuery<IUserInfo>({
-        queryFn: async () => UsersService.getUserById(user?._id),
+        queryFn: async () => user?.id ? UsersService.getUserById(user?._id) : null,
         queryKey: ['userInfo'],
     })
 
