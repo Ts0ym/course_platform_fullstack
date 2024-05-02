@@ -4,9 +4,9 @@ const nextConfig = {
         remotePatterns: [
             {
                 protocol: 'http',
-                hostname: 'localhost',
+                hostname: process.env.API_IMAGES_DOMAIN,
                 // Вы можете добавить порт, если это необходимо, например:
-                port: '5005',
+                port: process.env.API_IMAGES_PORT,
                 // Можно использовать pathname для дополнительного уточнения путей:
                 // pathname: '/images/**'
             }

@@ -5,7 +5,9 @@ import {config} from "dotenv";
 config()
 @Module({
     imports: [
-        MongooseModule.forRoot(process.env.MONGO_HOST)
+        MongooseModule.forRoot(process.env.MONGO_HOST,
+            {dbName: 'course_platform'}
+        )
     ]
 })
 export class DatabaseModule {}

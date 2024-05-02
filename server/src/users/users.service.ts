@@ -107,7 +107,7 @@ export class UsersService {
     }
 
     async getAll(){
-        return await this.usersModel.find().exec()
+        return await this.usersModel.find().select({ name: 1, email: 1, surname: 1, role: 1}).exec()
     }
 
     async enrollUserToCourse(userId: string, courseId: string){

@@ -7,10 +7,10 @@
   background-color: white
   align-items: center
   position: relative
-  top: 0
   z-index: 100
-  transition: all 0.2s ease
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, width 0.2s ease, background-color 0.2s ease, border-radius 0.2s ease
   margin: 0 auto
+  transform: translateY(0)
 
   &::after
     content: ''
@@ -23,6 +23,7 @@
 
   @media (max-width: 600px)
     height: 3em
+
     &::after
       left: 2%
       right: 2%
@@ -30,14 +31,17 @@
 .scrolled
   position: sticky
   box-shadow: 0 0.5em 1em rgba(0,0,0,0.1)
-  height: 4em
-  border-radius: 0.5em
-  width: 90%
   background: $color-glass
   backdrop-filter: blur(20px)
-  top: 1em
+  transform: translateY(-1em)
+  will-change: transform, box-shadow, opacity
+  top: 1.5em
+  width: 90%
+  border-radius: 0.5em
+
   &::after
     display: none
+
 
 .navBarImage
   display: flex

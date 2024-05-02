@@ -35,8 +35,8 @@ export class UsersController {
     async setLastLesson(@Body() body: {userId: string, lessonId: string}){
         return await this.usersService.setLastLesson(body)
     }
-    @UseGuards(RolesGuard)
-    @Roles('admin')
+    // @UseGuards(RolesGuard)
+    // @Roles('admin')
     @ApiTags('Users')
     @ApiOperation({summary: "Получить информацию о всех пользователях"})
     @Get('/')

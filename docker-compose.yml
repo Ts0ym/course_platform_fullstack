@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:4.4
+    container_name: mongo
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+      - ./dump:/dump
+    command: ["mongod", "--auth", "--bind_ip", "0.0.0.0"]
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: tsoymaksimigritos
+      MONGO_INITDB_ROOT_PASSWORD: 321875321875321875mMm
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    restart: always
+    depends_on:
+      - mongo
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_BASICAUTH_USERNAME: someusername
+      ME_CONFIG_BASICAUTH_PASSWORD: somepassword
+      ME_CONFIG_MONGODB_ADMINUSERNAME: tsoymaksimigritos
+      ME_CONFIG_MONGODB_ADMINPASSWORD: 321875321875321875mMm
+#      ME_CONFIG_MONGODB_URL: mongodb://tsoymaksimigritos:321875321875321875mMm@mongo:27017/"
+    ports:
+      - "8081:8081"
+
+volumes:
+  mongo_data:
