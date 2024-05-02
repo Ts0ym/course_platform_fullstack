@@ -58,7 +58,7 @@ export class UsersController {
             const updatedUser = await this.usersService.updateUser(id, dto);
             return updatedUser;
         } catch (error) {
-            throw new HttpException('Failed to update the user', HttpStatus.BAD_REQUEST);
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
         }
     }
 }

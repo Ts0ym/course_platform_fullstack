@@ -12,6 +12,9 @@ import {usePathname, useRouter} from "next/navigation";
 import useLogout from "@/hooks/useLogout";
 import AvatarContainer from "@/components/common/AvatarContainer/AvatarContainer";
 import CustomButton from "@/components/common/CustomButton/CustomButton";
+import {useQuery} from "@tanstack/react-query";
+import {IUserInfo} from "@/types";
+import {UsersService} from "@/services/usersService";
 
 export interface NavBarRoute {
     title: string,
@@ -26,6 +29,11 @@ const NavBar = () => {
     const router = useRouter();
     const pathname = usePathname()
     const scrollingPathExceptions: string[] = ['/admin', '/lesson']
+
+    const {data, isPending, error} = useQuery<IUserInfo>({
+        queryFn: async () => UsersService.getUserById(user?._id),
+        queryKey: ['userInfo'],
+    })
 
     useEffect(() => {
         if(!scrollingPathExceptions.some(elem => pathname.includes(elem))){
@@ -80,7 +88,7 @@ const NavBar = () => {
                             </div>
 
                             <div className={styles.userImage}>
-                                <AvatarContainer avatarPath={user.avatar} border/>
+                                <AvatarContainer avatarPath={data?.avatar || ''} border/>
                             </div>
 
                             <div className={styles.dropdownMenu}>

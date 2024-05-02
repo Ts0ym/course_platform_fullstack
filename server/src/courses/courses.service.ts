@@ -47,6 +47,12 @@ export class CoursesService {
             await this.themeModel.deleteOne({ _id: themeId });
         }));
 
+        try{
+            await this.filesService.deleteFile(course.image, FileTypes.IMAGE);
+        } catch (error) {
+        throw new Error(`Failed to delete image: ${error.message}`);
+    }
+
         // Удалить курс
         await this.courseModel.deleteOne({ _id: id });
     }

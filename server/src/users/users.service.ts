@@ -61,7 +61,6 @@ export class UsersService {
             throw new Error(`User with id ${id} not found`);
         }
 
-        // Проверка и удаление старого аватара, если он не является плейсхолдером
         if (dto.avatar) {
             const defaultAvatar = "avatar_placeholder.jpg";
             if (user.avatar && user.avatar !== defaultAvatar) {
@@ -78,7 +77,7 @@ export class UsersService {
 
         // Обновление информации о пользователе
         if (dto.aboutMe !== undefined) user.aboutMe = dto.aboutMe;
-        if (dto.socialLinks !== undefined) user.socialLinks = JSON.parse(dto.socialLinks);
+        if (dto.socialLinks !== undefined) user.socialLinks = dto.socialLinks.split(',');
         if (dto.name !== undefined) user.name = dto.name;
         if (dto.surname !== undefined) user.surname = dto.surname;
 

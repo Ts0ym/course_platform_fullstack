@@ -6,7 +6,7 @@ const nextConfig = {
                 protocol: 'http',
                 hostname: 'localhost',
                 // Вы можете добавить порт, если это необходимо, например:
-                // port: '5005',
+                port: '5005',
                 // Можно использовать pathname для дополнительного уточнения путей:
                 // pathname: '/images/**'
             }

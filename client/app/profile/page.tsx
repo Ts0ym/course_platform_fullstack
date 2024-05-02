@@ -74,7 +74,7 @@ const ProfilePage = () => {
     }
 
     const addSocialLink = () => {
-        if (socialLink && !socialLinks.includes(socialLink)) {
+        if (socialLink && !socialLinks.includes(socialLink) && socialLinks.length < 5) {
             setSocialLinks(prevLinks => [...prevLinks, socialLink]);
             setSocialLink('');
         }

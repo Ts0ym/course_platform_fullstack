@@ -23,10 +23,6 @@ export class UsersService {
             Object.keys(userData).forEach(key => {
                 if (key === 'avatar' && userData[key] instanceof File) {
                     formData.append('avatar', userData[key], userData[key].name);
-                } else if (key === 'socialLinks' && Array.isArray(userData[key])) {
-                    userData[key].forEach((link:string) => {
-                        formData.append('socialLinks', link);
-                    });
                 } else {
                     formData.append(key, userData[key]);
                 }
