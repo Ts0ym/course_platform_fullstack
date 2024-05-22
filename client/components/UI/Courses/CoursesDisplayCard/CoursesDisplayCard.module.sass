@@ -6,16 +6,17 @@
   border-radius: 1em
   overflow: hidden
   min-width: 10em
-  min-height: 25em
+  min-height: 18em
   padding: 1em
   position: relative
   transition: all 0.3s ease-in-out
   border: 0.05em solid $color-bordergray
-  filter: grayscale(100%)
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1)
   &:hover
     .courseImage
       transform: scale(1.1)
-    filter: grayscale(0%)
+    .arrow
+      transform: translateX(0.4em)
     transform: translate(0, -0.6em)
 
 .content
@@ -26,6 +27,11 @@
   align-items: flex-start
   height: 100%
   border-radius: 0.3em
+
+.descriptionContainer
+  //display: flex
+  //flex-direction: column
+  width: 100%
 
 
 .description
@@ -42,6 +48,8 @@
   gap: 0.3em
   flex-wrap: wrap
   margin-top: 0.7em
+  position: relative // Добавлено
+  z-index: 101
 
 .tag
   background-color: $color-lightgrey
@@ -54,16 +62,28 @@
 
 .title
   font-weight: bold
-  font-size: 1.6rem
+  font-size: 1.7rem
   color: #333
 
 .imageContainer
   position: absolute
   left: 15em
   bottom: -2em
+  z-index: 100
 
 .courseImage
   width: 20em
   transition: all 0.2s ease
 
+.bottomInfo
+  display: flex
+  width: 100%
+  align-items: center
+  //border: 1px solid black
+  z-index: 100
 
+.arrow
+  margin-left: auto
+  font-size: 2em
+  z-index: 101
+  transition: all 0.4s ease-in-out

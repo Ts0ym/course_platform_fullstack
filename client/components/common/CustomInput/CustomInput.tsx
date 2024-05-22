@@ -6,7 +6,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 interface CustomInputProps {
     placeholder: string
-    value: string | number
+    value: any
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
     type?: string
     title?: string
@@ -21,7 +21,7 @@ const CustomInput = ({
     placeholder,
     value,
     onChange,
-    title,
+    title = '',
     titleShow= true,
     type= "text",
     error = null,

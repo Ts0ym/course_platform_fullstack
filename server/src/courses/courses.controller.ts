@@ -27,6 +27,11 @@ export class CoursesController {
         private usersService: UsersService
     ) {}
 
+    @Get('tags')
+    async getUniqueTags() {
+        return this.coursesService.getUniqueTags();
+    }
+
     @Get("progress")
     async getCourseProgress(@Query() dto: GetCourseProgressDto){
         // console.log(dto)
@@ -40,9 +45,18 @@ export class CoursesController {
         return this.coursesService.getOne(id)
     }
 
+    @Get("/shortinfo/:id")
+    getShortInfo(@Param("id") id : string){
+        return this.coursesService.getShortInfo(id)
+    }
+
     @Get()
-    getAll(){
-        return this.coursesService.getAll()
+    async getCoursesByTagsAndSearch(
+        @Query('tags') tags?: string,
+        @Query('search') search?: string
+    ) {
+        const tagsArray = tags ? tags.split(',') : [];
+        return this.coursesService.getCoursesByTagsAndSearch(tagsArray, search);
     }
 
     @Post()
@@ -89,8 +103,14 @@ export class CoursesController {
         return this.usersService.getUserCourses(id)
     }
 
-    @Get("recommended/:id")
-    async getRecommendedCourses(@Param('id') id : string){
-        return this.usersService.getRecommendedCourses(id)
+    @Get('recommended/:id')
+    async getRecommendedCourses(
+        @Param('id') id: string,
+        @Query('tags') tags?: string,
+        @Query('search') search?: string
+    ) {
+        const tagsArray = tags ? tags.split(',') : [];
+        return this.usersService.getRecommendedCourses(id, tagsArray, search);
     }
+
 }

@@ -3,6 +3,7 @@ export class CreateHomeworkDto {
     userId: string;
     content: string;
     sendTime: Date;
+    previousVersion: string
 }
 
 export class UpdateHomeworkDto{
@@ -11,6 +12,6 @@ export class UpdateHomeworkDto{
 
 export class RateHomeworkDto{
     homeworkId: string;
-    grade: number
-    assessment: string
+    assessment: string;
+    grade: number;
 }

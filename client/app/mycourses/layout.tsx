@@ -6,7 +6,7 @@ export const metadata: Metadata = {
     description: "Страница с курсами пользователя",
 };
 
-export default function AuthLayout({
+export default function PageLayout({
                                        children,
                                    }: Readonly<{
     children: React.ReactNode;

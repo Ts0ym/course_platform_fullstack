@@ -1,7 +1,7 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {Theme} from "../themes/themes.schema";
-import {Model} from "mongoose";
+import {Model, Types} from "mongoose";
 import {Lesson} from "../lessons/lessons.shema";
 import {CourseProgress} from "../courses-progress/courses-progress.schema";
 import {Course} from "../courses/courses.schema";
@@ -25,7 +25,13 @@ export class HomeworksService {
     ) {}
 
     async create(dto: CreateHomeworkDto): Promise<Homework> {
-        const createdHomework = new this.homeworkModel({...dto, grade: 0, isRated: false});
+        const createdHomework = new this.homeworkModel({
+            ...dto,
+            grade: 0,
+            isRated: false,
+            status: 'submitted',
+            previousVersion: dto.previousVersion || null // Опциональная ссылка на предыдущую версию
+        });
         return createdHomework.save();
     }
 
@@ -47,7 +53,29 @@ export class HomeworksService {
     }
 
     async getAllUnratedHomeworks(){
-        return this.homeworkModel.find({isRated: false})
+        return this.homeworkModel.find({status: 'submitted'})
+            .populate({
+                path: "userId",
+                model: "User",
+                select: "name surname email avatar"
+            })
+            .populate({
+                path: "lessonId",
+                model: "Lesson",
+                select: "title homeworkText",
+                populate: {
+                    path: "themeId",
+                    model: "Theme",
+                    select: "title",
+                    populate: {
+                        path: "courseId",
+                        model: "Course",
+                        select: "title"
+                    }}});
+    }
+
+    async getAllCheckedHomeworks(){
+        return this.homeworkModel.find({ status: { $ne: 'submitted' } })
             .populate({
                 path: "userId",
                 model: "User",
@@ -94,12 +122,42 @@ export class HomeworksService {
         }
     }
 
+    async getHomeworkHistory(lessonId: string, userId: string, homeworkId: string): Promise<Homework[]> {
+        let history = [];
+        let findedHomework = await this.homeworkModel.findById(homeworkId).exec();
+
+        // Проверяем, была ли найдена домашняя работа
+        if (!findedHomework) {
+            throw new Error('Homework not found.');
+        }
+        // // Добавляем найденную домашнюю работу в историю как начальную точку
+        // history.push(findedHomework);
+
+        // Начинаем с предыдущей версии, если она существует
+        let current = findedHomework.previousVersion ?
+            await this.homeworkModel.findById(findedHomework.previousVersion).populate({
+                path: "userId",
+                model: "User",
+            }).exec() : null;
+
+        while (current) {
+            history.push(current);
+            if (!current.previousVersion) break;
+            current = await this.homeworkModel.findById(current.previousVersion).populate({
+                path: "userId",
+                model: "User",
+            }).exec();
+        }
+
+        return history;
+    }
+
     async rateHomework(dto: RateHomeworkDto){
         try{
             const homework = await this.homeworkModel.findById(dto.homeworkId);
-            homework.grade = dto.grade
             homework.assessment = dto.assessment
-            homework.isRated = true
+            homework.status = "graded"
+            homework.grade = dto.grade
             homework.save()
 
             const userId = homework.userId
@@ -119,5 +177,15 @@ export class HomeworksService {
         }catch (e) {
             throw new Error('Failed to rate homework');
         }
+    }
+
+    async requestRevision(homeworkId: string, comments: string): Promise<Homework> {
+        const homework = await this.homeworkModel.findById(homeworkId);
+        if (!homework) {
+            throw new NotFoundException('Homework not found');
+        }
+        homework.status = 'returned';
+        homework.assessment = comments; // Сохранение комментариев для доработки
+        return homework.save();
     }
 }

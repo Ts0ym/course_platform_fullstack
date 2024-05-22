@@ -39,4 +39,25 @@ export class UsersService {
             throw error;
         }
     }
+
+    static async getFullUserInfo(userId: string) {
+        try {
+            const response = await $authApi.get(`/users/fulldata/${userId}`);
+            return response.data;
+        } catch (error) {
+            console.error('Error retrieving user info:', error);
+            throw error;
+        }
+    }
+
+    static async enrollUser(dto: {userId: string
+        courseId: string, tariffId: string}) {
+        try {
+            const response = await $authApi.post('/courses/enroll', dto);
+            return response.data;
+        } catch (error) {
+            console.error('Error enrolling user:', error);
+            throw error;
+        }
+    }
 }

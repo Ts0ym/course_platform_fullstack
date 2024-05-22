@@ -15,6 +15,8 @@ import CustomButton from "@/components/common/CustomButton/CustomButton";
 import {useQuery} from "@tanstack/react-query";
 import {IUserInfo} from "@/types";
 import {UsersService} from "@/services/usersService";
+import {faCoins} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export interface NavBarRoute {
     title: string,
@@ -22,7 +24,6 @@ export interface NavBarRoute {
 }
 
 const NavBar = () => {
-
     const user = useAppSelector(state => state.auth.user);
     const logout = useLogout();
     const [isScrolled, setIsScrolled] = useState(false);
@@ -31,9 +32,13 @@ const NavBar = () => {
     const scrollingPathExceptions: string[] = ['/admin', '/lesson']
 
     const {data, isPending, error} = useQuery<IUserInfo>({
-        queryFn: async () => user?.id ? UsersService.getUserById(user?._id) : null,
+        queryFn: async () => {
+            if (!user?._id) return null;  // Предотвращаем запрос без необходимого ID
+            return UsersService.getUserById(user._id);
+        },
         queryKey: ['userInfo'],
-    })
+        enabled: !!user?._id  // Активируем запрос только если ID пользователя доступен
+    });
 
     useEffect(() => {
         if(!scrollingPathExceptions.some(elem => pathname.includes(elem))){
@@ -53,53 +58,55 @@ const NavBar = () => {
     }, [pathname]);
 
     return (
-            <div className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}>
-                <div className={styles.navBarImage}>
-                    <Image src={"/images/headerlogo.png"} alt={"logo"} width={600} height={600} layout="responsive" priority/>
-                    <p className={styles.betaShield}>Beta</p>
-                </div>
-                <div className={styles.navBarControls}>
-                    <div className={styles.navBarLinks}>
-                        {
-                            !pathname.includes('auth') &&
-                            NAVBAR_ROUTES.map((link, index) => <Link
-                                key={index}
-                                href={link.path}
-                                className={styles.navBarLink}>{link.title}</Link>)
-                        }
-                        {
-                            user && user.role === 'admin' &&
-                            <Link href={'/admin'} className={styles.navBarLink}>Администрирование</Link>
-                        }
-                        {
-                            !user && !pathname.includes('auth') &&
-                            <div className={styles.navBarLogin}>
-                                <CustomButton onClick={() => router.push('auth/register')} color={'black'}>Регистрация</CustomButton>
-                            </div>
-                        }
-                    </div>
+        <div className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}>
+            <div className={styles.navBarImage}>
+                <Image src={"/images/headerlogo.png"} alt={"logo"} width={600} height={600} layout="responsive" priority/>
+                <p className={styles.betaShield}>Beta</p>
+            </div>
+            <div className={styles.navBarControls}>
+                <div className={styles.navBarLinks}>
                     {
-                        user &&
-                        <div className={styles.userInfo}>
-
-                            <div className={styles.userCredentials}>
-                                <h1>{`${user.name} ${user.surname}`}</h1>
-                                <p className={styles.userEmail}>{user.email}</p>
-                            </div>
-
-                            <div className={styles.userImage}>
-                                <AvatarContainer avatarPath={data?.avatar || ''} border/>
-                            </div>
-
-                            <div className={styles.dropdownMenu}>
-                                <Link href="/mycourses" className={styles.dropdownItem}>Мои курсы</Link>
-                                <Link href="/profile" className={styles.dropdownItem}>Профиль</Link>
-                                <p className={styles.exitItem} onClick={() => logout()}>Выйти из профиля</p>
-                            </div>
-
+                        !pathname.includes('auth') &&
+                        NAVBAR_ROUTES.map((link, index) => <Link
+                            key={index}
+                            href={link.path}
+                            className={styles.navBarLink}>{link.title}</Link>)
+                    }
+                    {
+                        user && user.role === 'admin' &&
+                        <Link href={'/admin'} className={styles.navBarLink}>Администрирование</Link>
+                    }
+                    {
+                        !user && !pathname.includes('auth') &&
+                        <div className={styles.navBarLogin}>
+                            <CustomButton onClick={() => router.push('auth/register')} color={'black'}>Регистрация</CustomButton>
                         </div>
                     }
                 </div>
+                {
+                    user &&
+                    <div className={styles.userInfo}>
+
+                        <div className={styles.userCredentials}>
+                            <h1>{`${user.name} ${user.surname}`}</h1>
+                            <p className={styles.userEmail}>{user.email}</p>
+                        </div>
+
+                        <div className={styles.userImage}>
+                            <AvatarContainer avatarPath={data?.avatar || ''} border/>
+                        </div>
+
+                        <div className={styles.dropdownMenu}>
+                            {/*<Link href="/mycourses" className={styles.dropdownItem}>Мои курсы</Link>*/}
+                            <p className={styles.balanceItem}>{data?.balance}<FontAwesomeIcon icon={faCoins} className={styles.coinIcon}/></p>
+                            <Link href="/achievements" className={styles.dropdownItem}>Достижения</Link>
+                            <Link href="/profile" className={styles.dropdownItem}>Настройки профиля</Link>
+                            <p className={styles.exitItem} onClick={() => logout()}>Выйти</p>
+                        </div>
+
+                    </div>
+                }
+            </div>
         </div>
     );
 };

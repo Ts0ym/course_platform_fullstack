@@ -137,6 +137,7 @@ const AuthForm = ({ type } : AuthFormProps) => {
                             title="Имя"
                             titleShow={true}
                             error={errors.name}
+                            id={"name"}
                         />
                         <CustomInput
                             placeholder="Введите вашу фамилию"
@@ -145,6 +146,7 @@ const AuthForm = ({ type } : AuthFormProps) => {
                             title="Фамилия"
                             titleShow={true}
                             error={errors.surname}
+                            id={"surname"}
                         />
                         <div className={styles.redirects}>
                             <p className={styles.loginRedirect}>Уже есть аккаунт? <span onClick={() => router.push("/auth/login")}>Войти</span></p>

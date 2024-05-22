@@ -5,14 +5,22 @@ import CustomButton from "@/components/common/CustomButton/CustomButton";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {CoursesService} from "@/services/coursesService";
 import {NotificationsService} from "@/services/notificationsService";
+import {IHomework} from "@/types";
 
-const HomeworkAddForm = ({lessonId, userId} : {lessonId: string, userId: string}) => {
+const HomeworkAddForm = ({lessonId, userId, prevHomework} : {lessonId: string, userId: string, prevHomework?: any}) => {
 
     const [textBoxValue, setTextBoxValue] = React.useState('');
     const queryClient = useQueryClient();
     const addHomeworkMutation = useMutation({
         mutationFn: async () => {
-            await CoursesService.addHomeworkToLesson({lessonId, content: textBoxValue, userId, sendTime: new Date()});
+            await CoursesService.addHomeworkToLesson({
+                lessonId,
+                content: textBoxValue,
+                userId,
+                sendTime: new Date(),
+                previousVersion: prevHomework});
+
+            console.log(prevHomework)
         },
         onSuccess: () => {
             NotificationsService.showNotification("Задание отправлено", "success")

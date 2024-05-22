@@ -8,6 +8,7 @@ import { HomeworksController } from './homeworks.controller';
 import {CoursesProgressService} from "../courses-progress/courses-progress.service";
 import {CoursesProgressModule} from "../courses-progress/courses-progress.module";
 import {CourseProgress, CourseProgressSchema} from "../courses-progress/courses-progress.schema";
+import {Course, CourseSchema} from "../courses/courses.schema";
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import {CourseProgress, CourseProgressSchema} from "../courses-progress/courses-
       { name: Lesson.name, schema: LessonSchema },
       { name: Homework.name, schema: HomeworkSchema },
       { name: User.name, schema: UserSchema },
-      { name: CourseProgress.name, schema: CourseProgressSchema}
+      { name: CourseProgress.name, schema: CourseProgressSchema},
+      { name: Course.name, schema: CourseSchema}
     ])
   ],
   providers: [HomeworksService, CoursesProgressService],

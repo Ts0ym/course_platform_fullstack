@@ -15,6 +15,14 @@ import { CoursesProgressModule } from './courses-progress/courses-progress.modul
 import { HomeworksModule } from './homeworks/homeworks.module';
 import { TestResultModule } from './test-result/test-result.module';
 import { BugreportsModule } from './bugreports/bugreports.module';
+import { CourseRequestModule } from './course-request/course-request.module';
+import { ConsultationRequestsModule } from './consultation-requests/consultation-requests.module';
+import { PaymentsModule } from './payments/payments.module';
+import { MeetingsController } from './meetings/meetings.controller';
+import { MeetingsModule } from './meetings/meetings.module';
+import { TariffModule } from './tariff/tariff.module';
+import { AchievementsModule } from './achievements/achievements.module';
+import { ShopModule } from './shop/shop.module';
 import * as path from 'path';
 
 @Module({
@@ -34,9 +42,15 @@ import * as path from 'path';
       HomeworksModule,
       TestResultModule,
       BugreportsModule,
-
+      CourseRequestModule,
+      ConsultationRequestsModule,
+      PaymentsModule,
+      MeetingsModule,
+      TariffModule,
+      AchievementsModule,
+      ShopModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, MeetingsController],
   providers: [AppService, MailService],
 })
 export class AppModule {}

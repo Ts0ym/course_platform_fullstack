@@ -12,7 +12,7 @@ interface CustomTextBoxProps {
 const CustomTextBox = ({ value, onChange, placeholder = '', title = '', titleShow = false, titleShow: boolean , id = ''} : CustomTextBoxProps) => {
     return (
         <div className={styles.CustomTextBoxContainer}>
-            {titleShow && <p className={styles.textBoxTitle}>{title}</p>}
+            {title !== '' && <p className={styles.textBoxTitle}>{title}</p>}
             <textarea
                 value={value}
                 placeholder={placeholder}

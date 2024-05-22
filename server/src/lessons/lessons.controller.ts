@@ -45,8 +45,6 @@ export class LessonsController {
     async getLessonByUser(@Query('userId') userId: string,
                           @Query('lessonId') lessonId: string
                           ,){
-        console.log(userId)
-        console.log(lessonId)
         return this.lessonsService.getLessonByUser(userId, lessonId)
     }
 
@@ -84,5 +82,18 @@ export class LessonsController {
     @Post("complete")
     async completeLesson(@Body() body: {userId: string, lessonId: string, courseId: string}){
         return await this.coursesProgressService.markLessonAsCompleted(body.userId, body.courseId, body.lessonId)
+    }
+
+    @Get('theme/:themeId')
+    async getLessonsWithStatuses(
+        @Param('themeId') themeId: string,
+        @Query('userId') userId: string,
+        @Query('courseId') courseId: string
+    ) {
+        try{
+            return this.lessonsService.getLessonsWithStatuses(themeId, userId, courseId);
+        }catch (e) {
+            console.log(e);
+        }
     }
 }

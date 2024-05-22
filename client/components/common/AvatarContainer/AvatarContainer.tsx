@@ -5,11 +5,11 @@ import {API_URL} from "@/constants";
 
 const AvatarContainer = ({ avatarPath, border = false} : { avatarPath: string, border?: boolean}) => {
 
-    let buttonClass = styles.userImage;
-    if(border) { (buttonClass += " " + styles.border); }
+    let containerClass = styles.userImage;
+    if(border) { (containerClass += " " + styles.border); }
 
     return (
-        <div className={buttonClass}>
+        <div className={containerClass}>
             <Image
                 src={API_URL + "image/" + avatarPath || "avatar_placeholder.jpg"}
                 alt={"avatar"}

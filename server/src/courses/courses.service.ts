@@ -89,7 +89,14 @@ export class CoursesService {
                 path: 'lessons',
                 model: 'Lesson'
             }
-        }).exec();
+        }).populate({
+            path: "tariffs"
+        })
+            .exec();
+    }
+
+    async getShortInfo(id: string){
+        return await this.courseModel.findById(id).select("_id title description image tags").exec();
     }
 
     async getAll(){
@@ -97,13 +104,45 @@ export class CoursesService {
             path: 'themes',
             populate: {
                 path: 'lessons',
-                model: 'Lesson'
+                model: 'Lesson',
+                select: "-text -description -homeworkText -questions"
             }
         }).exec();
     }
 
     async enrollUser(dto: EnrollUserDto){
-        await this.coursesProgressService.createCourseProgress(dto.userId, dto.courseId);
-        return await this.usersService.enrollUserToCourse(dto.userId, dto.courseId);
+        await this.coursesProgressService.createCourseProgress(dto.userId, dto.courseId, dto.tariffId, new Date());
+        await this.usersService.enrollUserToCourse(dto.userId, dto.courseId, dto.tariffId);
+    }
+
+    async getUniqueTags(): Promise<string[]> {
+        const courses = await this.courseModel.find().lean().exec();
+        const tags = courses.flatMap(course => course.tags || []);
+        const uniqueTags = Array.from(new Set(tags));
+        return uniqueTags;
+    }
+
+    async getCoursesByTagsAndSearch(tags?: string[], search?: string): Promise<Course[]> {
+        const query: any = {};
+
+        if (tags && tags.length > 0) {
+            query.tags = { $in: tags };
+        }
+
+        if (search) {
+            query.title = { $regex: search, $options: 'i' }; // 'i' для регистронезависимого поиска
+        }
+
+        const courses = await this.courseModel.find(query)
+            .populate({
+                path: 'themes',
+                populate: {
+                    path: 'lessons',
+                    model: 'Lesson',
+                },
+            })
+            .exec();
+
+        return courses;
     }
 }

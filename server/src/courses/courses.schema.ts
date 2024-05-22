@@ -20,6 +20,9 @@ export class Course {
 
     @Prop({ type: [Types.ObjectId], default: [], ref: THEMES_SCHEMA_NAME})
     themes: Types.ObjectId[];
+
+    @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tariff' }] })
+    tariffs: Types.ObjectId[];
 }
 
 export type CourseDocument = Course & Document;

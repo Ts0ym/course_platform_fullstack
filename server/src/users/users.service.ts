@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import {BadRequestException, forwardRef, Inject, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {User, UserDocument} from "./users.schema";
 import {Model, Types} from "mongoose";
@@ -6,10 +6,14 @@ import {CreateUserDto, UpdateUserDto} from "./users.dto";
 const bcrypt = require('bcryptjs');
 import { v4 as uuidv4 } from 'uuid';
 import {CoursesProgressService} from "../courses-progress/courses-progress.service";
-import {Course} from "../courses/courses.schema";
-import {Lesson} from "../lessons/lessons.shema";
-import {Theme} from "../themes/themes.schema";
+import {Course, CourseDocument} from "../courses/courses.schema";
+import {Lesson, LessonDocument} from "../lessons/lessons.shema";
+import {Theme, ThemeDocument} from "../themes/themes.schema";
 import {FilesService, FileTypes} from "../files/files.service";
+import {Tariff} from "../tariff/tariff.schema";
+import {Achievement, AchievementDocument} from "../achievements/achievements.schema";
+import {CourseProgress, CourseProgressDocument} from "../courses-progress/courses-progress.schema";
+import {Homework} from "../homeworks/homeworks.schema";
 
 
 
@@ -19,7 +23,13 @@ export class UsersService {
     constructor(
        @InjectModel(User.name) private readonly usersModel: Model<User>,
        @InjectModel(Course.name) private readonly courseModel: Model<Course>,
-       private coursesProgressService: CoursesProgressService,
+       @InjectModel(Tariff.name) private readonly tariffModel: Model<Tariff>,
+       @InjectModel(Achievement.name) private readonly achievementModel: Model<Achievement>,
+       @InjectModel(Lesson.name) private readonly lessonModel: Model<Lesson>,
+       @InjectModel(Theme.name) private readonly themeModel: Model<Theme>,
+       @InjectModel(CourseProgress.name) private readonly courseProgressModel: Model<CourseProgressDocument>,
+       @InjectModel(Homework.name) private readonly homeworkModel: Model<Homework>,
+       @Inject(forwardRef(() => CoursesProgressService)) private readonly coursesProgressService: CoursesProgressService,
        private readonly filesService: FilesService,
     ) {}
 
@@ -32,6 +42,34 @@ export class UsersService {
             return this.usersModel.findById(id).select("-password -resetPasswordToken -refreshToken -activationToken -lastVisitedLesson -coursesEnrolled").exec()
         }catch (e) {
             throw new Error(`Error finding user with id ${id} ${e.message}`)
+        }
+    }
+
+    async getFullUserData(id: string){
+        try {
+            const userData = await this.usersModel.findById(id).populate({
+                path: "coursesEnrolled",
+                model: "Course"
+            }).exec();
+
+            if (!userData) {
+                throw new Error(`User with id ${id} not found`);
+            }
+            const courses = userData.coursesEnrolled;
+            const coursesWithProgress = [];
+
+            for (let i = 0; i < courses.length; i++) {
+                const course = courses[i];
+                const progress = await this.coursesProgressService.getCourseProgress({courseId: course._id.toString(), userId:id});
+                const progressPercentage = await this.coursesProgressService.getCoursePercentage({ courseId: course._id.toString(), userId: id }) || 0;
+                coursesWithProgress.push({ course, progress: progressPercentage, startDate: progress.startDate, tariff: progress.tariff});
+            }
+
+            const { coursesEnrolled, ...rest} = userData.toObject()
+
+            return { ...rest, coursesWithProgress };
+        } catch (e) {
+            throw new Error(`Error finding user with id ${id}: ${e.message}`);
         }
     }
 
@@ -48,9 +86,11 @@ export class UsersService {
             resetPasswordToken: null,
             coursesEnrolled: [],
             lastVisitedLesson: null,
-            avatar: "avatar-placeholder.jpg",
+            avatar: "avatar_placeholder.jpg",
             aboutMe: null,
-            socialLinks: null
+            socialLinks: null,
+            consultationTokens: 0,
+            achievements: [],
         }
         return (await this.usersModel.create(newUser)).toJSON()
     }
@@ -61,20 +101,22 @@ export class UsersService {
             throw new Error(`User with id ${id} not found`);
         }
 
-        if (dto.avatar) {
-            const defaultAvatar = "avatar_placeholder.jpg";
-            if (user.avatar && user.avatar !== defaultAvatar) {
-                try {
-                    await this.filesService.deleteFile(user.avatar, FileTypes.IMAGE);
-                } catch (error) {
-                    throw new Error(`Failed to delete old avatar: ${error.message}`);
+        try{
+            if (dto.avatar) {
+                const defaultAvatar = "avatar_placeholder.jpg";
+                if (user.avatar && user.avatar !== defaultAvatar) {
+                    try {
+                        await this.filesService.deleteFile(user.avatar, FileTypes.IMAGE);
+                    } catch (error) {
+                        throw new Error(`Failed to delete old avatar: ${error.message}`);
+                    }
                 }
+                const avatarFileName = await this.filesService.createFile(dto.avatar, FileTypes.IMAGE);
+                user.avatar = avatarFileName;
             }
+        }catch (e) {
 
-            const avatarFileName = await this.filesService.createFile(dto.avatar, FileTypes.IMAGE);
-            user.avatar = avatarFileName;
         }
-
         // Обновление информации о пользователе
         if (dto.aboutMe !== undefined) user.aboutMe = dto.aboutMe;
         if (dto.socialLinks !== undefined) user.socialLinks = dto.socialLinks.split(',');
@@ -110,12 +152,23 @@ export class UsersService {
         return await this.usersModel.find().select({ name: 1, email: 1, surname: 1, role: 1}).exec()
     }
 
-    async enrollUserToCourse(userId: string, courseId: string){
-        const user = await this.usersModel.findById(userId).exec()
-        if (user && user.coursesEnrolled.includes(new Types.ObjectId(courseId))) {
+    async enrollUserToCourse(userId: string, courseId: string, tariffId: string){
+        const user = await this.usersModel.findById(userId).exec();
+        if (!user) {
+            throw new Error('User not found');
+        }
+        if (user.coursesEnrolled.includes(new Types.ObjectId(courseId))) {
             throw new Error('User is already enrolled in this course');
         }
-        return await this.usersModel.findByIdAndUpdate(userId, {$push: {coursesEnrolled: new Types.ObjectId(courseId)}})
+
+        user.coursesEnrolled.push(new Types.ObjectId(courseId));
+
+        const tariff = await this.tariffModel.findById(tariffId).exec() as Tariff
+        if (!tariff) {
+            throw new Error('Tariff not found');
+        }
+        user.consultationTokens += tariff.freeConsultations;
+        await user.save();
     }
 
     async getLastLesson(userId: string){
@@ -169,8 +222,7 @@ export class UsersService {
         return user.coursesEnrolled
     }
 
-    async getRecommendedCourses(userId: string) {
-        // Получаем курсы, на которые уже записан пользователь
+    async getRecommendedCourses(userId: string, tags?: string[], search?: string): Promise<Course[]> {
         const user = await this.usersModel.findById(userId)
             .populate({
                 path: 'coursesEnrolled',
@@ -182,26 +234,31 @@ export class UsersService {
             throw new Error('User not found');
         }
 
-        // Получаем список ID курсов, на которые записан пользователь
         const enrolledCourseIds = user.coursesEnrolled.map(course => course._id.toString());
 
-        // Получаем все доступные курсы
-        const allCourses = await this.courseModel.find()
+        const query: any = {
+            _id: { $nin: enrolledCourseIds },
+        };
+
+        if (tags && tags.length > 0) {
+            query.tags = { $in: tags };
+        }
+
+        if (search) {
+            query.title = { $regex: search, $options: 'i' };
+        }
+
+        const recommendedCourses = await this.courseModel.find(query)
             .populate({
                 path: 'themes',
                 populate: {
                     path: 'lessons',
-                    model: 'Lesson' // Модель урока
-                }
+                    model: 'Lesson',
+                },
             })
             .exec();
 
-        // Фильтруем курсы, исключая те, на которые пользователь уже записан
-        const recommendedCourses = allCourses.filter(course => !enrolledCourseIds.includes(course._id.toString()));
-
-        // Выбираем до трех рекомендуемых курсов для возвращения
-        const maxRecommendedCourses = 3;
-        return recommendedCourses.slice(0, maxRecommendedCourses);
+        return recommendedCourses;
     }
 
     async setLastLesson(dto: {lessonId: string, userId: string}){
@@ -211,5 +268,234 @@ export class UsersService {
         return user
     }
 
+    async addBalance(userId: string, amount: number): Promise<User> {
+        if (amount <= 0) {
+            throw new BadRequestException('Amount must be greater than zero');
+        }
 
+        const user = await this.usersModel.findById(userId);
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        user.balance += amount;
+        return user.save();
+    }
+
+    async subtractBalance(userId: string, amount: number): Promise<User> {
+        if (amount <= 0) {
+            throw new BadRequestException('Amount must be greater than zero');
+        }
+
+        const user = await this.usersModel.findById(userId);
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        if (user.balance < amount) {
+            throw new BadRequestException('Insufficient balance');
+        }
+
+        user.balance -= amount;
+        return user.save();
+    }
+
+    async addConsultationTokens(userId: string, amount: number): Promise<User> {
+        if (amount <= 0) {
+            throw new BadRequestException('Amount must be greater than zero');
+        }
+
+        const user = await this.usersModel.findById(userId);
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        user.consultationTokens += amount;
+        return user.save();
+    }
+
+    async subtractConsultationTokens(userId: string, amount: number): Promise<User> {
+        if (amount <= 0) {
+            throw new BadRequestException('Amount must be greater than zero');
+        }
+
+        const user = await this.usersModel.findById(userId);
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        if (user.consultationTokens < amount) {
+            throw new BadRequestException('Insufficient balance');
+        }
+
+        user.consultationTokens -= amount;
+        return user.save();
+    }
+
+    async checkAchievements(userId: string): Promise<Achievement[]> {
+        const user = await this.usersModel.findById(userId).populate('coursesEnrolled');
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        const courseProgressList = await this.courseProgressModel.find({ user: userId }).populate('completedLessons').exec();
+
+        const achievements = await this.achievementModel.find().exec();
+        const newlyCompletedAchievements: Achievement[] = [];
+
+        for (const achievement of achievements) {
+            let achievementCompleted = false;
+
+            switch (achievement.condition) {
+                case 'complete_first_lesson':
+                    if (courseProgressList.some(cp => cp.completedLessons.length >= 1)) {
+                        achievementCompleted = true;
+                    }
+                    break;
+                case 'complete_5_lessons':
+                    if (courseProgressList.some(cp => cp.completedLessons.length >= 5)) {
+                        achievementCompleted = true;
+                    }
+                    break;
+                case 'complete_10_lessons':
+                    if (courseProgressList.some(cp => cp.completedLessons.length >= 10)) {
+                        achievementCompleted = true;
+                    }
+                    break;
+                case 'complete_first_theme':
+                    for (const progress of courseProgressList) {
+                        const course = await this.courseModel.findById(progress.course).populate<{
+                            themes: (ThemeDocument & { lessons: LessonDocument[] })[]
+                        }>({
+                            path: 'themes',
+                            populate: {
+                                path: 'lessons',
+                                model: 'Lesson',
+                            },
+                        }).exec();
+
+                        if (course.themes.some(theme => theme.lessons.every(lesson => progress.completedLessons.includes(lesson._id)))) {
+                            achievementCompleted = true;
+                        }
+                    }
+                    break;
+                case 'complete_3_themes':
+                    let completedThemesCount = 0;
+                    for (const progress of courseProgressList) {
+                        const course = await this.courseModel.findById(progress.course).populate<{
+                            themes: (ThemeDocument & { lessons: LessonDocument[] })[]
+                        }>({
+                            path: 'themes',
+                            populate: {
+                                path: 'lessons',
+                                model: 'Lesson',
+                            },
+                        }).exec();
+
+                        completedThemesCount += course.themes.filter(theme => theme.lessons.every(lesson => progress.completedLessons.includes(lesson._id))).length;
+                    }
+                    if (completedThemesCount >= 3) {
+                        achievementCompleted = true;
+                    }
+                    break;
+                case 'submit_first_homework':
+                    const homeworks = await this.homeworkModel.find({ userId }).exec();
+                    if (homeworks.length >= 1) {
+                        achievementCompleted = true;
+                    }
+                    break;
+                case 'submit_5_homeworks':
+                    const homeworks5 = await this.homeworkModel.find({ userId }).exec();
+                    if (homeworks5.length >= 5) {
+                        achievementCompleted = true;
+                    }
+                    break;
+                // case 'complete_lesson_in_a_week':
+                //     const lastWeek = new Date();
+                //     lastWeek.setDate(lastWeek.getDate() - 7);
+                //     if (courseProgressList.some(cp => cp.completedLessons.some(lesson => lesson.completionDate >= lastWeek))) {
+                //         achievementCompleted = true;
+                //     }
+                //     break;
+                // case 'participate_in_3_consultations':
+                //     if (user.consultations.length >= 3) {
+                //         achievementCompleted = true;
+                //     }
+                //     break;
+                case 'complete_course':
+                    if (await this.isCourseCompleted(userId)) {
+                        achievementCompleted = true;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            if (achievementCompleted && !user.achievements.includes(achievement._id)) {
+                await this.addAchievement(user._id, achievement._id);
+                newlyCompletedAchievements.push(achievement);
+            }
+        }
+
+        return newlyCompletedAchievements;
+    }
+
+    private async isCourseCompleted(userId: string): Promise<boolean> {
+        const courseProgressList = await this.courseProgressModel.find({ user: userId })
+            .populate({
+                path: 'course',
+                model: 'Course',
+                populate: {
+                    path: 'themes',
+                    model: 'Theme',
+                    populate: {
+                        path: 'lessons',
+                        model: 'Lesson',
+                    },
+                },
+            }).exec();
+
+        return courseProgressList.some(courseProgress => {
+            const course = courseProgress.course as unknown as CourseDocument & {
+                themes: (ThemeDocument & { lessons: LessonDocument[] })[]
+            };
+            return course.themes.every((theme: Theme) => {
+                const lessons = theme.lessons;
+                return lessons.every(lesson => courseProgress.completedLessons.includes(lesson._id));
+            });
+        });
+    }
+
+    private async addAchievement(userId: Types.ObjectId, achievementId: Types.ObjectId): Promise<void> {
+        const user = await this.usersModel.findById(userId);
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        if (!user.achievements.includes(achievementId)) {
+            user.achievements.push(achievementId);
+            await user.save();
+        }
+    }
+
+    async getUserAchievements(userId: string) {
+        const user = await this.usersModel.findById(userId).populate('achievements');
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        const allAchievements = await this.achievementModel.find().exec();
+        const userAchievements = user.achievements.map(a => a.toString());
+
+        const achievements = allAchievements.map(achievement => ({
+            _id: achievement._id.toString(),
+            title: achievement.title,
+            description: achievement.description,
+            icon: achievement.icon,
+            condition: achievement.condition,
+            achieved: userAchievements.includes(achievement._id.toString())
+        }));
+
+        return achievements;
+    }
 }

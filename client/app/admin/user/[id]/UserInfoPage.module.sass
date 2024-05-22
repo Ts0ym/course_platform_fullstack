@@ -1,0 +1,46 @@
+@use '@/styles/colors' as *
+
+.page
+  min-height: 100vh
+  display: flex
+  flex-direction: column
+  align-items: center
+
+.outerContainer
+  border: 0.01em solid $color-bordergray
+  width: 95%
+  min-height: 80vh
+  border-radius: 0.6em
+  display: flex
+  margin-bottom: 2em
+
+.leftContainer
+  display: flex
+  flex-direction: column
+  width: 50%
+  border-right: 0.01em solid $color-bordergray
+  padding: 2em 1.5em
+
+.rightContainer
+  display: flex
+  flex-direction: column
+  width: 50%
+  padding: 2em 1.5em
+
+.avatarSection
+  display: flex
+  flex-direction: column
+  margin-bottom: 1.5em
+  p
+    color: $color-grey
+    margin-bottom: 0.5em
+
+.avatarContainer
+  width: 8em
+  height: 8em
+
+.containerTitle
+  font-size: 1.5em
+  font-weight: bold
+  color: $color-lightblack
+  margin-bottom: 1em

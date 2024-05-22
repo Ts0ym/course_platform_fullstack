@@ -1,7 +1,7 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {Course} from "../courses/courses.schema";
-import {Model, Types} from "mongoose";
+import {Model, Schema, Types} from "mongoose";
 import {Theme} from "../themes/themes.schema";
 import {Lesson} from "./lessons.shema";
 import {CreateLessonDto} from "./lessons.dto";
@@ -10,6 +10,7 @@ import {CourseProgress} from "../courses-progress/courses-progress.schema";
 import {Homework} from "../homeworks/homeworks.schema";
 import {CoursesProgressService} from "../courses-progress/courses-progress.service";
 import {TestResult} from "../test-result/test-result.schema";
+import {Tariff} from "../tariff/tariff.schema";
 
 @Injectable()
 export class LessonsService {
@@ -114,23 +115,64 @@ export class LessonsService {
         const progress = await this.coursesProgressModel.findOne({
             user: new Types.ObjectId(userId),
             course: course._id,
-        });
+        }).populate('tariff');
+        if (!progress) {
+            throw new Error('Course progress not found');
+        }
+
+        // Проверка доступности заданий
+        const tariff = progress.tariff as unknown as Tariff;
+        const startDate = new Date(progress.startDate);
+        const currentDate = new Date();
+        const daysElapsed = Math.floor((currentDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+        const areAssignmentsAccessible = daysElapsed <= tariff.duration;
 
         const homeworks = await this.homeworkModel.find({
             lessonId: lessonId,
             userId: userId
-        }).populate({path: "userId", select: "_id email name surname avatar"})
+        }).populate({path: "userId", select: "_id email name surname avatar"});
 
         // Проверяем, выполнен ли урок
-        const isCompleted = progress?.completedLessons.some(id => id.equals(lesson._id)) || false;
+        const isCompleted = progress.completedLessons.some(id => id.equals(lesson._id)) || false;
 
         return {
-            lesson: {...lesson.toObject(),
-            course: {...course.toObject()},
-            theme: {...theme.toObject()}},
+            lesson: { ...lesson.toObject(), course: { ...course.toObject() }, theme: { ...theme.toObject() } },
             isCompleted,
             homeworks,
-            completedLessons: progress?.completedLessons};
+            completedLessons: progress.completedLessons,
+            areAssignmentsAccessible
+        };
+    }
+
+    async getLessonsWithStatuses(themeId: string, userId: string, courseId: string) {
+        const themeObjectId = new Types.ObjectId(themeId);
+        const lessons = await this.lessonModel.find({ themeId: themeObjectId }).lean();
+
+        if (lessons.length === 0) {
+            return [];
+        }
+
+        const courseProgress = await this.coursesProgressModel.findOne({ user: userId, course: courseId }).lean();
+        const completedLessonsIds = courseProgress.completedLessons.map(id => id.toString());
+        const lessonIds = lessons.map(lesson => lesson._id.toString());
+        const homeworks = await this.homeworkModel.find({ userId, lessonId: { $in: lessonIds } }).lean();
+
+        const lessonsWithStatuses = lessons.map(lesson => {
+            const isCompleted = completedLessonsIds.includes(lesson._id.toString());
+            const homework = homeworks.find(hw => hw.lessonId.toString() === lesson._id.toString());
+
+            let lessonStatus = isCompleted ? 'completed' : 'not_completed';
+            if (homework && homework.status === 'returned' && !isCompleted) {
+                lessonStatus = 'returned';
+            }
+
+            return {
+                ...lesson,
+                lessonStatus
+            };
+        });
+
+        return lessonsWithStatuses;
     }
 
 }

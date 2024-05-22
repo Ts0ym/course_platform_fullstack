@@ -17,6 +17,8 @@ import ThemeCard from "@/components/UI/Courses/ThemeCard/ThemeCard";
 import Image from "next/image";
 import {API_URL} from "@/constants";
 import FileUpload from "@/components/common/FileUpload/FileUpload";
+import TariffsList from "@/components/UI/Tariffs/TariffsList/TariffsList";
+import TariffCreateForm from "@/components/UI/Tariffs/TariffCreateForm/TariffCreateForm";
 
 const Page = ({ params }: { params: { id: string } }) => {
 
@@ -36,6 +38,7 @@ const Page = ({ params }: { params: { id: string } }) => {
     const [newImage, setNewImage] = useState<File | null>();
     const [isImageEdit, setIsImageEdit] = useState(false);
     const [changesMade, setChangesMade] = useState(false);
+    const [showTariffsForm, setShowTariffsForm] = useState(false);
 
     const addThemeMutation = useMutation({
         mutationFn: async (createThemeDto: CreateThemeDto) => {
@@ -126,6 +129,11 @@ const Page = ({ params }: { params: { id: string } }) => {
                     })}} color={"black"}>Добавить тему</CustomButton>
                 </Modal.Body>
             </Modal>
+            <Modal show={showTariffsForm} onHide={() => setShowTariffsForm(false)}>
+                <Modal.Body>
+                    <TariffCreateForm courseId={data?._id?? ""} onSubmit={() => setShowTariffsForm(false)}/>
+                </Modal.Body>
+            </Modal>
             <div className={styles.courseInfoPage}>
                 <div className={styles.buttonContainer}>
                     <div>
@@ -195,6 +203,19 @@ const Page = ({ params }: { params: { id: string } }) => {
                                      </CustomButton>
                                  </div>
                             }
+                        </div>
+                    </div>
+                    <div className={styles.tariffsContainer}>
+                        <h1>Тарифы курса</h1>
+                        <TariffsList tariffs={data?.tariffs?? []}/>
+                        <div className={styles.addButtonContainer}>
+                            <CustomButton
+                                onClick={() => setShowTariffsForm(true)}
+                                color={"black"}
+                            >
+                                <FontAwesomeIcon icon={faPlus}/>
+                                Создать тариф
+                            </CustomButton>
                         </div>
                     </div>
                     <div className={styles.courseTitleContainer}>

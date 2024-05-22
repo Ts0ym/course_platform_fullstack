@@ -11,14 +11,14 @@ interface CustomSelectProps {
     options: ISelectValue[];
     onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
     title?: string;
-    titleShow: boolean;
+    titleShow?: boolean;
     id?: string;
 }
 
 const CustomSelect = ({ value, options, onChange, title = "", titleShow = false, id=""}: CustomSelectProps) => {
     return (
         <div className={styles.selectContainer}>
-            {titleShow && <p className={styles.title}>{title}</p>}
+            {title !== '' && <p className={styles.title}>{title}</p>}
             <select
                 value={value}
                 onChange={onChange}

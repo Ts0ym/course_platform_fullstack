@@ -1,0 +1,32 @@
+@use '@/styles/colors' as *
+
+.page
+  display: flex
+  flex-direction: column
+  min-height: 100vh
+
+.tokensInfo
+  h2
+    color: $color-grey
+    font-size: 1.1em
+    padding: 1rem 0 0 1rem
+
+.shopRedirect
+  cursor: pointer
+  color: $color-blue
+
+.title
+  color: $color-lightblack
+  font-weight: bold
+  font-size: 1.4em
+  padding: 1rem 0 0 1rem
+
+.calendlyWrapper
+  display: flex
+  overflow: hidden !important
+  justify-content: center
+  align-items: center
+  &> *:first-child
+    width: 100%
+    min-height: 50em
+    //height: 90%

@@ -1,3 +1,5 @@
+import {ICourse, ITariff} from "@/types/CoursesTypes";
+
 export interface IUser {
     _id: string;
     password: string;
@@ -20,6 +22,7 @@ export interface IUserInfo{
     avatar:      string;
     socialLinks: string[];
     aboutMe:     string;
+    consultationTokens: number;
 }
 
 export interface UpdateUserDto{
@@ -29,4 +32,29 @@ export interface UpdateUserDto{
     socialLinks?: string[];
     name?: string;
     surname?: string;
+}
+
+export interface fullUserData{
+    _id:                 string;
+    password:            string;
+    name:                string;
+    surname:             string;
+    email:               string;
+    role:                string;
+    balance:             string;
+    refreshToken:        string;
+    isActivated:         string;
+    activationToken:     string;
+    resetPasswordToken:  null;
+    lastVisitedLesson:   string;
+    avatar:              string;
+    aboutMe:             string;
+    socialLinks:         string[];
+    coursesWithProgress: CoursesWithProgress[];
+}
+export interface CoursesWithProgress {
+    course:   ICourse;
+    progress: number;
+    startDate: string
+    tariff: ITariff
 }

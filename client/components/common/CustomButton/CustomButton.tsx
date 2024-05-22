@@ -7,9 +7,10 @@ interface CustomButtonProps{
     type?: "button" | "submit" | "reset"
     outline?: boolean
     shadow?: boolean
+    disabled?: boolean
 }
 
-const CustomButton = ({onClick, color, children, type = "button", outline = false, shadow = false} : PropsWithChildren<CustomButtonProps>) => {
+const CustomButton = ({onClick, color, children, type = "button", outline = false, shadow = false, disabled = false} : PropsWithChildren<CustomButtonProps>) => {
 
     let buttonClass = styles.customButton;
 
@@ -34,7 +35,9 @@ const CustomButton = ({onClick, color, children, type = "button", outline = fals
         <button
             onClick={onClick}
             className={buttonClass}
-            type={type}>
+            type={type}
+            disabled={disabled}
+        >
             {children}
         </button>
     );

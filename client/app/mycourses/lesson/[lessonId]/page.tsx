@@ -12,7 +12,6 @@ import {
     faArrowRight,
     faArrowUp,
     faBook,
-    faCheck,
     faCircleCheck, faCircleExclamation,
     faCircleQuestion,
     faList
@@ -23,12 +22,14 @@ import styles from "./LessonPage.module.sass";
 import {API_URL} from "@/constants";
 import ReactPlayer from "react-player";
 import HomeworkAddForm from "@/components/UI/Homeworks/HomeworkAddForm/HomeworkAddForm";
-import {CompleteLessonDto, IHomework} from "@/types";
+import {CompleteLessonDto, IAchievement, IHomework} from "@/types";
 import HomeworksCard from "@/components/UI/Homeworks/HomeworksCard/HomeworksCard";
 import TestComponent from "@/components/UI/Courses/TestComponent/TestComponent";
 import TestResults from "@/components/UI/Courses/TestResults/TestResults";
 import ProgressCircle from "@/components/common/ProgressCircle/ProgressCircle";
-import {getCourseProgress} from "@/utils/coursesDataUtils";
+import {AchievementService} from "@/services/achievementsService";
+import {NotificationsService} from "@/services/notificationsService";
+import RateLessonForm from "@/components/UI/Courses/RateLessonForm/RateLessonForm";
 
 const Page = ({ params: { lessonId } }: {params: {lessonId: string}}) => {
     const { user } = useAppSelector(state => state.auth);
@@ -57,6 +58,20 @@ const Page = ({ params: { lessonId } }: {params: {lessonId: string}}) => {
 
     })
 
+    const checkAchievementsMutation = useMutation({
+        mutationFn: () => AchievementService.checkAchievements(user._id),
+        onSuccess: (newAchievements) => {
+            if (newAchievements.length > 0) {
+                newAchievements.forEach((achievement : IAchievement) => {
+                    NotificationsService.showNotification(`Achievement unlocked: ${achievement.title}`, 'success');
+                });
+            }
+        },
+        onError: (error) => {
+            NotificationsService.showNotification('Error checking achievements', 'error');
+        }
+    });
+
     useEffect(() => {
         if(!data?.isCompleted && data?.lesson?.type !== "quiz"
             &&
@@ -69,10 +84,14 @@ const Page = ({ params: { lessonId } }: {params: {lessonId: string}}) => {
         }
     }, [data]);
 
+    useEffect(() => {
+        checkAchievementsMutation.mutate();
+    }, []);
+
     if (isLoading) return <div>Loading...</div>;
     if (isError || !data ) return <div>Error occurred or data is not available</div>;
 
-    const { lesson, homeworks, isCompleted, completedLessons} = data;
+    const { lesson, homeworks, isCompleted, completedLessons, areAssignmentsAccessible} = data;
     const lessons = lesson?.theme?.lessons ?? [];
     const currentIndex = lessons.findIndex((l:any)=> l._id === lessonId);
     const navigationHandler = (id: string) => router.push(`/mycourses/lesson/${id}`);
@@ -98,14 +117,23 @@ const Page = ({ params: { lessonId } }: {params: {lessonId: string}}) => {
     }
     const completedPercentage = Math.round(getThemeProgress() / lessons?.length * 100)
 
+    const isSendFormEnable = (homeworks: IHomework[])  => {
+        return areAssignmentsAccessible && (homeworks.some((homework: IHomework) => homework.status === 'returned')
+            && !homeworks.some((homework: IHomework) => homework.status === 'submitted')
+                && !homeworks.some((homework: IHomework) => homework.status === 'graded'))
+            || homeworks.length === 0 && areAssignmentsAccessible
+    }
+
     return (
         <>
             <Modal show={show} onHide={() => setShow(!show)} size="lg">
                 <Modal.Body>
                     <LessonList
-                        lessons={lessons}
-                        completedLessonsIds={completedLessons}
                         onExit={() => setShow(!show)}
+                        userId={user?._id}
+                        courseId={lesson?.course?._id}
+                        themeId={lesson?.theme?._id}
+                        themeTitle={lesson?.theme?.title}
                     />
                 </Modal.Body>
             </Modal>
@@ -228,8 +256,8 @@ const Page = ({ params: { lessonId } }: {params: {lessonId: string}}) => {
                             && homeworks.map((homework: IHomework) => <HomeworksCard homework={homework} key={homework._id}/>)
                         }
                         {
-                            homeworks.length === 0
-                            && <HomeworkAddForm lessonId={lessonId} userId={user._id}/>
+                            isSendFormEnable(homeworks)
+                            && <HomeworkAddForm lessonId={lessonId} userId={user._id} prevHomework={homeworks.length !== 0 ? homeworks[homeworks.length-1]._id : null}/>
                         }
                     </div>
                 }
@@ -241,6 +269,7 @@ const Page = ({ params: { lessonId } }: {params: {lessonId: string}}) => {
                             color={"black"}>Следующий урок <FontAwesomeIcon icon={faArrowRight}/></CustomButton>
                     </div>
                 }
+                <RateLessonForm />
             </div>
         </>
     );

@@ -3,15 +3,12 @@ import {HomeworkData} from "@/components/UI/Homeworks/HomeworksList/HomeworksLis
 import styles from "./HomeworkAdminCard.module.sass"
 import { intlFormatDistance } from "date-fns"
 import AvatarContainer from "@/components/common/AvatarContainer/AvatarContainer";
+import {GetFormattedTimeFromString} from "@/utils/timeUtils";
 
 const HomeworkAdminCard = ({ data, onClick } : { data: HomeworkData, onClick: () => void}) => {
     return (
         <div className={styles.card} onClick={onClick}>
-            <p>{intlFormatDistance(
-                new Date(data.sendTime),
-                Date.now(),
-                {locale: 'ru', numeric: "auto"}
-            )}</p>
+            <p>{GetFormattedTimeFromString(data.sendTime)}</p>
             <p>{data.lessonId?.title}</p>
             <p>{data.lessonId?.themeId?.title}</p>
             <div className={styles.userDataContainer}>

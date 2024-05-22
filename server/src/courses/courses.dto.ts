@@ -8,6 +8,7 @@ export class CreateCourseDto{
 export class EnrollUserDto{
     readonly userId: string
     readonly courseId: string
+    readonly tariffId: string
 }
 
 export class GetCourseProgressDto{

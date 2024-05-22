@@ -1,0 +1,100 @@
+@use '@/styles/colors' as *
+
+.form
+  width: 100%
+  height: 100%
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: flex-start
+  //border: 1px solid black
+  text-align: center
+  white-space: pre-line
+  padding: 0.7em
+  padding-bottom: 1.8em
+  h1
+    font-weight: bold
+    font-size: 1.7em
+    color: $color-lightblack
+    margin-bottom: 1rem
+  h2
+    margin-bottom: 2rem
+    line-height: 1.5
+
+.warning
+  margin: 1em 0
+  font-size: 0.9em
+  span
+    color: $color-blue
+    cursor: pointer
+    text-decoration: underline
+    text-decoration-thickness: 0.1em
+    &:hover
+      color: darken($color-blue, 15%)
+
+.supportLink
+  margin-top: 1em
+  color: $color-lightblack
+  font-size: 1.1em
+
+.successIcon
+  font-size: 3em
+  color: $color-green
+  margin-bottom: 1rem
+
+.whatsNext
+  color: $color-grey
+  text-align: center
+  white-space: pre-line
+  width: 70%
+
+.contactsContainer
+  display: flex
+  flex-direction: column
+  width: 100%
+  gap: 0.6em
+
+.phoneContainer
+  background-color: $color-lightergrey
+  display: flex
+  flex-direction: column
+  border-radius: 0.5em
+  width: 100%
+  justify-content: center
+  align-items: center
+  padding: 1em
+  gap: 0.6em
+  h2
+    margin: 0
+    font-weight: bold
+  p
+    color: $color-darkgrey
+    margin: 0
+    font-size: 0.9em
+
+.messengersContainer
+  display: flex
+  gap: 0.6em
+
+.messenger
+  width: 50%
+  display: flex
+  flex-direction: column
+  align-items: center
+  padding: 1em
+  background-color: $color-lightergrey
+  border-radius: 0.5em
+  gap: 1em
+  transition: background-color 0.3s ease-in-out
+  p
+    font-size: 0.8em
+  &:hover
+    background-color: darken($color-lightergrey, 10%)
+
+.telegramIcon
+  font-size: 3em
+  color: #30a6d8
+
+.watsappIcon
+  font-size: 3em
+  color: #43e560

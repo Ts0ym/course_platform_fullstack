@@ -1,0 +1,21 @@
+@use '@/styles/colors' as *
+
+.card
+  display: flex
+  width: 100%
+  min-height: 5em
+  border-bottom: 1px solid $color-bordergray
+  align-items: center
+  padding: 2em 1em
+  color: $color-lightblack
+  background-color: $color-lightergrey
+  transition: all 0.2s ease-in-out
+
+  &:hover
+    transform: translateX(0.5em)
+  > *
+    width: 14.2%
+
+.buttonContainer
+  width: 10%
+  margin-left: auto

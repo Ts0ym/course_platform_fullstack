@@ -5,10 +5,16 @@ import styles from "./HomeworksList.module.sass";
 import { Spinner } from "react-bootstrap";
 import SearchInput from "@/components/common/SearchInput/SearchInput";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faArrowUpShortWide, faArrowUpWideShort, faFaceSadTear, faFilter} from "@fortawesome/free-solid-svg-icons";
+import {
+    faArrowUpShortWide,
+    faArrowUpWideShort,
+    faChevronDown, faChevronUp,
+    faFaceSadTear,
+    faFilter
+} from "@fortawesome/free-solid-svg-icons";
 import HomeworkAdminCard from "@/components/UI/Homeworks/HomeworkAdminCard/HomeworkAdminCard";
 import CustomRadioButtons from "@/components/common/CustomRadioButtons/CustomRadioButtons";
-import CustomModal from "@/components/common/CustomModal/CustomModal";
+import CustomBottomModal from "@/components/common/CustomBottomModal/CustomBottomModal";
 import HomeworksRateForm from "@/components/UI/Homeworks/HomeworksRateForm/HomeworksRateForm";
 import EmptyPlaceholder from "@/components/common/EmptyPlaceholder/EmptyPlaceholder";
 
@@ -36,22 +42,33 @@ export interface HomeworkData {
     },
     content: string,
     grade: number,
-    sendTime: string
+    sendTime: string,
+    assessment: string
+    status: "submitted" | "returned" | "graded"
 }
 
 type sortOrder = 'newest' | 'oldest';
 
 const HomeworksList: React.FC = () => {
-    const { data, isLoading } = useQuery<HomeworkData[]>({
-        queryFn: CoursesService.getAllHomeworks,
-        queryKey: ['homeworks'],
-    });
 
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [sortOrder, setSortOrder] = useState<sortOrder>('newest');
     const [showSortOptions, setShowSortOptions] = useState<boolean>(false);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [selectedHomework, setSelectedHomework] = useState<HomeworkData>();
+    const [homeworksType, setHomeworksType] = useState<"checked" | "unchecked">('unchecked');
+    const [showDropdown, setShowDropdown] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    const { data, isLoading } = useQuery<HomeworkData[]>({
+        queryKey: ['homeworks', homeworksType],
+        queryFn: () => homeworksType === 'unchecked' ? CoursesService.getUncheckedHomeworks() : CoursesService.getCheckedHomeworks(),
+    });
+
+    const toggleHomeworkType = (type: "checked" | "unchecked") => {
+        setHomeworksType(type);
+        setShowDropdown(false);
+    };
 
     const sortedData = React.useMemo(() => {
         if (!data) return [];
@@ -84,10 +101,15 @@ const HomeworksList: React.FC = () => {
             if (sortOptionsRef.current && !sortOptionsRef.current.contains(event.target as Node)) {
                 setShowSortOptions(false);
             }
+            // Проверяем, что dropdownRef.current существует и клик произведен вне элемента
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setShowDropdown(false);  // Закрываем выпадающее меню
+            }
         };
 
-        if (showSortOptions) {
-            // Добавляем обработчик клика для всего документа, если опции сортировки отображаются
+        // Проверяем, нужно ли добавлять обработчик
+        if (showSortOptions || showDropdown) {
+            // Добавляем обработчик клика для всего документа
             document.addEventListener('mousedown', handleClickOutside);
         }
 
@@ -95,15 +117,42 @@ const HomeworksList: React.FC = () => {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [showSortOptions]);
+    }, [showSortOptions, showDropdown]);
 
     return (
         <>
-            <CustomModal onClose={() => {setShowModal(false)}} isOpen={showModal}>
+            <CustomBottomModal onClose={() => {setShowModal(false)}} isOpen={showModal}>
                 {selectedHomework && <HomeworksRateForm homework={selectedHomework} onRateSuccess={() => setShowModal(false)}/>}
-            </CustomModal>
+            </CustomBottomModal>
             <div className={styles.homeworksList}>
-                <h1 className={styles.title}>Задания <span>на проверку</span></h1>
+                <h1 className={styles.title}>
+                    Задания на проверку
+                    {homeworksType === 'unchecked' && <span> (Текущие)</span>}
+                    {homeworksType === 'checked' && <span> (Архив)</span>}
+                    <button onClick={() => setShowDropdown(!showDropdown)} className={styles.dropdownButton}>
+                        {
+                            !showDropdown
+                                ? <FontAwesomeIcon icon={faChevronDown}/>
+                                : <FontAwesomeIcon icon={faChevronUp}/>
+                        }
+                    </button>
+                    {showDropdown && (
+                        <div className={styles.dropdownMenu} ref={dropdownRef}>
+                            <ul>
+                                {homeworksType !== 'unchecked' && (
+                                    <li onClick={() => toggleHomeworkType('unchecked')}>
+                                        Задания на проверку
+                                    </li>
+                                )}
+                                {homeworksType !== 'checked' && (
+                                    <li onClick={() => toggleHomeworkType('checked')}>
+                                        Архив заданий
+                                    </li>
+                                )}
+                            </ul>
+                        </div>
+                    )}
+                </h1>
                 <div className={styles.controlsContainer}>
                     <div className={styles.searchBarContainer}>
                         <SearchInput

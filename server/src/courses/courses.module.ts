@@ -11,6 +11,9 @@ import {UsersService} from "../users/users.service";
 import {CoursesProgressModule} from "../courses-progress/courses-progress.module";
 import {User, UserSchema} from "../users/users.schema";
 import {CourseProgress, CourseProgressSchema} from "../courses-progress/courses-progress.schema";
+import {Homework, HomeworkSchema} from "../homeworks/homeworks.schema";
+import {Tariff, TariffSchema} from "../tariff/tariff.schema";
+import {Achievement, AchievementSchema} from "../achievements/achievements.schema";
 
 @Module({
   imports: [
@@ -19,7 +22,10 @@ import {CourseProgress, CourseProgressSchema} from "../courses-progress/courses-
           { name: Theme.name, schema: ThemeSchema },
           { name: Lesson.name, schema: LessonSchema },
           { name: User.name, schema: UserSchema},
-          {name: CourseProgress.name, schema: CourseProgressSchema}
+          {name: CourseProgress.name, schema: CourseProgressSchema},
+          {name: Homework.name, schema: HomeworkSchema},
+          {name: Tariff.name, schema: TariffSchema},
+          {name: Achievement.name, schema: AchievementSchema}
       ]),
   ],
   providers: [

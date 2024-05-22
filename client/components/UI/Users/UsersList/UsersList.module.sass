@@ -1,12 +1,68 @@
 @use '../../../../styles/colors' as *
 
+.title
+  font-size: 1.8em
+  font-weight: 600
+  margin: 0.5em auto 1em 1em
+  color: $color-lightblack
+  position: relative
+  display: flex
+
+.dropdownMenu
+  position: absolute
+  bottom: -140%
+  right: 0
+  border: 0.03em solid $color-bordergray
+  background-color: white
+  z-index: 101
+  padding: 0.3em 0.5em
+  border-radius: 0.3em
+  &:hover
+    background-color: $color-lightgrey
+  li
+    font-size: 1.5rem
+
+.dropdownButton
+  background: none
+  border: none
+
 .controlsContainer
-  margin-bottom: 1em
+  display: flex
+  gap: 0.8em
+  padding: 0 1em
+
+.searchBarContainer
+  width: 20em
+  display: flex
+  flex-direction: column
+
+.sortControls
+  display: flex
+  position: relative
+
+.sortOptionsContainer
+  display: flex
+  flex-direction: column
+  width: 15em
+  position: absolute
+  left: 0
+  top: 2.5em
+  background-color: white
+  border: 0.1em solid $color-lightgrey
+  border-radius: 0.5em
+
+.sortButton
+  background: none
+  border: none
+  color: $color-lightblack
+  font-size: 1em
+  font-weight: 500
+
+.icon
+  margin-right: 0.3em
 
 .tableContainer
-  border: 2px solid $color-lightgrey
-  border-radius: 1em
-  padding: 0 1em
+
 
 .infoHeader
   width: 100%
@@ -20,3 +76,4 @@
 
 .usersList
   padding: 1em 0
+  overflow: hidden

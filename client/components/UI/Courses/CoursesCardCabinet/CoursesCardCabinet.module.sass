@@ -17,7 +17,6 @@
     .courseImage
       transform: scale(1.2)
 
-
 .content
   padding: 1rem
   display: flex
@@ -36,6 +35,8 @@
   gap: 0.3em
   flex-wrap: wrap
   margin-top: 0.7em
+  position: relative // Добавлено
+  z-index: 5
 
 .tag
   background-color: $color-lightgrey
@@ -51,6 +52,9 @@
   font-weight: bold
   font-size: 1.6rem
   color: $color-lightblack
+  position: relative // Добавлено
+  z-index: 5
+  line-height: 1.2
 
 .info
   display: flex
@@ -61,7 +65,7 @@
 .imageContainer
   position: absolute
   left: 60%
-  bottom: -15%
+  bottom: -23%
   //border: 1px solid black
   width: 60%
 

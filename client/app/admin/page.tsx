@@ -8,6 +8,11 @@ import { useAppSelector } from "@/redux/hooks";
 import styles from "./AdminPage.module.sass";
 import { useQuery } from '@tanstack/react-query';
 import {useRouter, useSearchParams} from 'next/navigation';
+// import CoursesRequestList from "@/components/UI/Courses/CoursesRequestList/CoursesRequestList";
+import ConsultationsAdminPage from "@/components/UI/Consultations/ConsultationsAdminPage/ConsultationsAdminPage";
+import ConsultationsRequestsList
+    from "@/components/UI/Consultations/ConsultaionsRequestsList/ConsultationsRequestsList";
+import AchievementsAdminPage from "@/components/UI/Achievements/AchievementsAdminPage/AchievementsAdminPage";
 
 const CoursesList = dynamic(() => import('@/components/UI/Courses/CoursesList/CoursesList'), {
     loading: () =>
@@ -24,6 +29,14 @@ const UsersList = dynamic(() => import('@/components/UI/Users/UsersList/UsersLis
     ssr: false
 });
 const HomeworksList = dynamic(() => import('@/components/UI/Homeworks/HomeworksList/HomeworksList'), {
+    loading: () =>
+        <div className={styles.spinnerContainer}>
+            <Spinner animation="border"/>
+        </div>,
+    ssr: false
+});
+
+const CoursesRequestList = dynamic(() => import('@/components/UI/Courses/CoursesRequestList/CoursesRequestList'), {
     loading: () =>
         <div className={styles.spinnerContainer}>
             <Spinner animation="border"/>
@@ -71,6 +84,18 @@ const Page = () => {
                 </Tab>
                 <Tab eventKey="users" title={<span className={styles.tabLink}>Пользователи</span>} className={styles.tabContent}>
                    {activeKey === 'users' && <UsersList />}
+                </Tab>
+                <Tab eventKey="courseRequests" title={<span className={styles.tabLink}>Заявки на обратную связь</span>} className={styles.tabContent}>
+                    {activeKey === 'courseRequests' && <CoursesRequestList />}
+                </Tab>
+                {/*<Tab eventKey="consultationsRequests" title={<span className={styles.tabLink}>Заявки на консультации</span>} className={styles.tabContent}>*/}
+                {/*    {activeKey === 'consultationsRequests' && <ConsultationsRequestsList />}*/}
+                {/*</Tab>*/}
+                {/*<Tab eventKey="consultations" title={<span className={styles.tabLink}>Расписание консультаций</span>} className={styles.tabContent}>*/}
+                {/*    {activeKey === 'consultations' && <ConsultationsAdminPage />}*/}
+                {/*</Tab>*/}
+                <Tab eventKey="achievements" title={<span className={styles.tabLink}>Достижения</span>} className={styles.tabContent}>
+                    {activeKey === 'achievements' && <AchievementsAdminPage />}
                 </Tab>
             </Tabs>
         </div>

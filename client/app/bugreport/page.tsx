@@ -15,6 +15,7 @@ import {useMutation} from "@tanstack/react-query";
 import {IBugReportData} from "@/types";
 import {CoursesService} from "@/services/coursesService";
 import {NotificationsService} from "@/services/notificationsService";
+import BackButton from "@/components/common/BackButton/BackButton";
 
 
 
@@ -66,13 +67,7 @@ const Page = () => {
 
     return (
         <div className={styles.page}>
-            <div className={styles.button}>
-                <CustomButton
-                    onClick={() => router.back()}
-                    color={"white"}
-                    outline
-                >Назад</CustomButton>
-            </div>
+            <BackButton/>
             {
                 !isFormSended ?
                 <div className={styles.formContainer}>

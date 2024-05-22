@@ -1,0 +1,68 @@
+@use '@/styles/colors' as *
+
+.modalOverlay
+  position: fixed
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+  background-color: rgba(0, 0, 0, 0.5)
+  display: flex
+  justify-content: center
+  align-items: flex-end
+  z-index: 1000
+  opacity: 0
+  visibility: hidden
+  transition: opacity 0.2s, visibility 0.2s
+
+  &.open
+    opacity: 1
+    visibility: visible
+
+.closeButton
+  position: absolute
+  top: 1em
+  right: 1em
+  width: 2.5em
+  height: 2.5em
+  background: transparent
+  cursor: pointer
+  display: flex
+  align-items: center
+  justify-content: center
+  border: none
+  border-radius: 0.3em
+  transition: all 0.2s ease-in-out
+  &::before, &::after
+    content: ''
+    position: absolute
+    height: 0.1em
+    background-color: $color-lightblack
+    width: 70%
+
+  &::before
+    transform: rotate(45deg)
+
+  &::after
+    transform: rotate(-45deg)
+
+  &:hover
+    transform: scale(1.2)
+
+
+.modalContainer
+  padding: 3em 1em 1em 1em
+  background: white
+  min-width: 40em
+  min-height: 5em
+  border-radius: 2em
+  box-sizing: border-box
+  transition: transform 0.5s ease-in-out
+  position: relative
+  align-self: center
+  justify-self: center
+  transform: scale(0)
+  justify-content: center
+  display: flex
+  .modalOverlay.open &
+    transform: scale(1)

@@ -21,7 +21,7 @@ export class User {
     @Prop({required: true, type: String})
     role: string
 
-    @Prop({required: true, type: String})
+    @Prop({required: true, type: Number})
     balance: number
 
     @Prop({required: false, type: String})
@@ -50,6 +50,12 @@ export class User {
 
     @Prop({required: false, type: [String]})
     socialLinks: string[]
+
+    @Prop({required: true, type: Number, default: 0})
+    consultationTokens: number
+
+    @Prop({ required: false, type: [{ type: Types.ObjectId, ref: 'Achievement' }] })
+    achievements: Types.ObjectId[];
 }
 
 export type UserDocument = User & mongoose.Document

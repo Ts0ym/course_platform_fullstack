@@ -18,6 +18,12 @@ export class CourseProgress {
 
     @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: LESSONS_SCHEMA_NAME }) // Предполагается наличие схемы Lesson
     completedLessons: Types.ObjectId[];
+
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Tariff', required: true })
+    tariff: Types.ObjectId;
+
+    @Prop({ required: true })
+    startDate: Date;
 }
 
 export type CourseProgressDocument = CourseProgress & Document;

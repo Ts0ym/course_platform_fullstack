@@ -14,15 +14,22 @@ import CustomTextBox from "@/components/common/ CustomTextBox/CustomTextBox";
 import CustomButton from "@/components/common/CustomButton/CustomButton";
 import {CoursesService} from "@/services/coursesService";
 import {NotificationsService} from "@/services/notificationsService";
-const HomeworksRateForm = ({ homework, onRateSuccess }: {homework: HomeworkData, onRateSuccess: () => void}) => {
+import {useAppSelector} from "@/redux/hooks";
+import HomeworkContent from "@/components/UI/Homeworks/HomeworkContent/HomeworkContent";
+const HomeworksRateForm = ({ homework, onRateSuccess}: {homework: HomeworkData, onRateSuccess: () => void}) => {
 
     const [homeworkTextShown, setHomeworkTextShown] = React.useState(false);
-    const [homeworkRate, setHomeworkRate] = React.useState(0)
-    const [assessmentText, setAssessmentText] = React.useState('');
+    const [homeworkRate, setHomeworkRate] = React.useState(homework.grade || 0);
+    const [assessmentText, setAssessmentText] = React.useState(homework.assessment || '');
+    const user = useAppSelector(data => data.auth.user);
 
     const queryClient = useQueryClient()
     const date = parseISO(homework.sendTime); // Преобразование строки в объект Date
-    const formattedDate = format(date, "d MMMM 'в' HH:mm", { locale: ru });
+
+    const {data: homeworkHistory} = useQuery<HomeworkData[]>({
+        queryFn: async () => CoursesService.getHomeworkHistory(homework.lessonId._id, user._id, homework._id),
+        queryKey: ['homeworks', homework],
+    })
 
     const rateHomeworkMutation = useMutation({
         mutationFn: async ({homeworkId, grade, assessment} : {homeworkId: string, grade: number, assessment: string}) => {
@@ -33,22 +40,50 @@ const HomeworksRateForm = ({ homework, onRateSuccess }: {homework: HomeworkData,
         onSuccess: () => {
             onRateSuccess();
             queryClient.invalidateQueries({queryKey: ['homeworks']})
-            NotificationsService.showNotification("Оценка отправлена", "success")
+            NotificationsService.showNotification("Оценка выствлена", "success")
         },
         onError: () => {
             NotificationsService.showNotification("Ошибка при выставлении оценки", "error")
         }
     })
 
+    const returnHomeworkMutation = useMutation({
+        mutationFn: async ({homeworkId, assessment} : {homeworkId: string, assessment: string}) => {
+            return await CoursesService.requestRevision(homeworkId, assessment)
+        },
+        onSuccess: () => {
+            onRateSuccess();
+            queryClient.invalidateQueries({queryKey: ['homeworks']})
+            NotificationsService.showNotification("Работа отправлена на доработку", "success")
+        },
+        onError: () => {
+            NotificationsService.showNotification("Ошибка отправке на доработку", "error")
+        }
+    })
+
     useEffect(() => {
-        setHomeworkRate(0);
-        setAssessmentText('');
+        if(homework.grade!== undefined && homework.grade!== null) {
+            setHomeworkRate(homework.grade);
+        }
+        if (homework.assessment !== undefined && homework.assessment!== null) {
+            setAssessmentText(homework.assessment);
+        }else{
+            setAssessmentText('');
+        }
         setHomeworkTextShown(false);
     }, [homework]);
 
     const handleTextShown = () => {
         setHomeworkTextShown(!homeworkTextShown)
     }
+
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+
 
     return (
         <div className={styles.form}>
@@ -84,6 +119,10 @@ const HomeworksRateForm = ({ homework, onRateSuccess }: {homework: HomeworkData,
                 <h1 className={styles.title}>
                     {homework.lessonId.title}
                 </h1>
+                {
+                    homework.status === "returned" &&
+                    <p className={styles.returnWarning}>Это задание было отправлено на доработку</p>
+                }
                 <p className={styles.showTextButton} onClick={handleTextShown}>
                     {
                         homeworkTextShown
@@ -97,16 +136,26 @@ const HomeworksRateForm = ({ homework, onRateSuccess }: {homework: HomeworkData,
                         {homework.lessonId.homeworkText}
                     </p>
                 }
-                <div className={styles.contentContainer}>
-                    <p>{homework.content}</p>
-                </div>
-                <div className={styles.studentInfo}>
-                    <div className={styles.avatarContainer}>
-                        <AvatarContainer avatarPath={homework.userId.avatar}/>
-                    </div>
-                    <p>{homework.userId.email}</p>
-                    <p className={styles.sendDate}>{formattedDate}</p>
-                </div>
+                {
+                    Array.isArray(homeworkHistory) && homeworkHistory.length > 0 &&
+                    <>
+                        <p className={styles.homeworksTitle}>Прошлые версии задания:</p>
+                        {homeworkHistory.reverse().map((homework, index) =>
+                            <HomeworkContent
+                                content={homework.content}
+                                sendTime={homework.sendTime}
+                                user={homework.userId}
+                                key={index}
+                            />)}
+                    </>
+                }
+                <p className={styles.homeworksTitle}>Последняя версия задания:</p>
+                <HomeworkContent
+                    content={homework.content}
+                    sendTime={homework.sendTime}
+                    user={homework.userId}
+                />
+
                 <div className={styles.rateContainer}>
                     <h1>Оцените ответ студента</h1>
                 </div>
@@ -120,23 +169,40 @@ const HomeworksRateForm = ({ homework, onRateSuccess }: {homework: HomeworkData,
                     <CustomTextBox
                         value={assessmentText}
                         onChange={e => setAssessmentText(e.target.value)}
-                        placeholder={"Добавьте описание к оценке"}
-                        title={"Описание к оценке"}
+                        placeholder={"Добавьте комментарий к оценке"}
+                        title={"Комментарий к оценке"}
                         titleShow={true}
                     />
                 </div>
                 <div className={styles.buttonsContainer}>
-                    <div>
-                        <CustomButton
-                            onClick={() => {
-                                rateHomeworkMutation.mutate({
-                                    homeworkId: homework._id,
-                                    grade: homeworkRate,
-                                    assessment: assessmentText
-                                })
-                            }}
-                            color={"black"}
-                        >Выставить оценку</CustomButton>
+                    <div className={styles.leftButtons}>
+                        <div>
+                            <CustomButton
+                                onClick={() => {
+                                    rateHomeworkMutation.mutate({
+                                        homeworkId: homework._id,
+                                        grade: homeworkRate,
+                                        assessment: assessmentText
+                                    })
+                                }}
+                                color={"black"}
+                            >Выставить оценку</CustomButton>
+                        </div>
+                        {
+                            homework.status === "submitted" &&
+                            <div>
+                                <CustomButton
+                                    onClick={() => {
+                                        returnHomeworkMutation.mutate({
+                                            homeworkId: homework._id,
+                                            assessment: assessmentText
+                                        })
+                                    }}
+                                    color={"red"}
+                                    outline
+                                >Отправить на доработку</CustomButton>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

@@ -2,7 +2,7 @@
 
 .myCoursesPage
   min-height: 100vh
-  padding: 2em
+  padding: 0 2em 5em 2em
   display: flex
   flex-direction: column
   align-items: center
@@ -21,7 +21,7 @@
 
 .sectionHeader
   font-size: 1.6em
-  margin: 2em 0 1em 0
+  margin: 1.2em 0 1em 0
   color: $color-lightblack
 
 .allMyCoursesContainer
@@ -38,3 +38,72 @@
 
 .courseThemes
   padding: 2em
+
+.consultationsRedirect
+  margin-top: 1.5em
+  display: flex
+  width: 70%
+  background-color: white
+  box-shadow: 0 0 1em 0.1em rgba(0,0,0,.1)
+  border: 0.05em solid $color-bordergray
+  border-radius: 2.5rem
+  padding: 0.5em
+  height: 18em
+  transition: all 0.4s ease-in-out
+  &:hover
+    .imageContainer
+      img
+        transform: scale(1.05)
+    transform: scale(1.02)
+    .redirectArrow
+      transform: rotate(0deg)
+
+.imageContainer
+  overflow: hidden
+  border-radius: 2rem
+  width: 60%
+  position: relative
+  img
+    object-fit: cover
+    object-position: bottom
+    transition: all 0.5s ease-in-out
+
+.infoContainer
+  display: flex
+  flex-direction: column
+  padding: 2em 1em 1em 3em
+  width: 40%
+  h1
+    font-weight: bold
+    font-size: 2.2em
+    color: $color-lightblack
+  h2
+    margin: auto 0
+    color: $color-darkergrey
+    font-size: 1.1rem
+    width: 15em
+    line-height: 1.2
+
+.buttonContainer
+  display: flex
+  justify-content: space-between
+  width: 100%
+
+.button
+  width: 15em
+
+.redirectArrow
+  display: flex
+  border: 0.13rem solid $color-lightblack // Используйте красную границу для отладки
+  aspect-ratio: 1
+  height: 100%
+  font-size: 2em
+  border-radius: 50% // 50% для круглой формы
+  justify-content: center
+  align-items: center
+  overflow: hidden
+  padding: 0.4rem
+  color: $color-lightblack
+  transform: rotate(-45deg)
+  transition: all 0.3s ease-in-out
+

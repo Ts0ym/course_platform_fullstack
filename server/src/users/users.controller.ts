@@ -2,7 +2,7 @@ import {
     Body,
     Controller,
     Get,
-    HttpException, HttpStatus,
+    HttpException, HttpStatus, NotFoundException,
     Param,
     Patch,
     Post,
@@ -21,6 +21,10 @@ export class UsersController {
     constructor(private usersService: UsersService) {}
 
 
+    @Get(':id/achievements')
+    async getUserAchievements(@Param('id') userId: string) {
+        return this.usersService.getUserAchievements(userId);
+    }
     @Get("lastlesson/:id")
     async getLastLesson(@Param('id') id : string){
         return await this.usersService.getLastLesson(id)
@@ -31,10 +35,16 @@ export class UsersController {
         return await this.usersService.findById(id)
     }
 
+    @Get("fulldata/:id")
+    async getUserFullData(@Param('id') id : string){
+        return await this.usersService.getFullUserData(id)
+    }
+
     @Post("lastlesson")
     async setLastLesson(@Body() body: {userId: string, lessonId: string}){
         return await this.usersService.setLastLesson(body)
     }
+
     // @UseGuards(RolesGuard)
     // @Roles('admin')
     @ApiTags('Users')
@@ -60,5 +70,24 @@ export class UsersController {
         } catch (error) {
             throw new HttpException(error, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @Patch(':id/add-balance')
+    async addBalance(@Param('id') userId: string, @Body('amount') amount: number) {
+        return this.usersService.addBalance(userId, amount);
+    }
+
+    @Patch(':id/subtract-balance')
+    async subtractBalance(@Param('id') userId: string, @Body('amount') amount: number) {
+        return this.usersService.subtractBalance(userId, amount);
+    }
+
+    @Get(':id/check-achievements')
+    async checkUserAchievements(@Param('id') userId: string) {
+        const user = await this.usersService.findById(userId);
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+        return this.usersService.checkAchievements(userId);
     }
 }

@@ -9,7 +9,7 @@ import {useQueryClient} from "@tanstack/react-query";
 import CustomTextBox from "@/components/common/ CustomTextBox/CustomTextBox";
 import CustomButton from "@/components/common/CustomButton/CustomButton";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCircleCheck, faHourglassStart, faStar} from "@fortawesome/free-solid-svg-icons";
+import {faCircleCheck, faHammer, faHourglassStart, faStar} from "@fortawesome/free-solid-svg-icons";
 import AvatarContainer from "@/components/common/AvatarContainer/AvatarContainer";
 import {format} from "date-fns";
 import {ru} from "date-fns/locale";
@@ -29,7 +29,6 @@ const HomeworksCard = ({ homework } : { homework: IHomework}) => {
         }
     });
 
-    // Методы для управления редактированием
     const handleEdit = () => {
         setIsEditing(true);
     };
@@ -58,7 +57,7 @@ const HomeworksCard = ({ homework } : { homework: IHomework}) => {
                     <p className={styles.name}>{homework.userId.surname}</p>
                     <p className={styles.date}>{format(homework.sendTime, "d MMMM 'в' HH:mm", { locale: ru })}</p>
                     {
-                        homework.isRated === false &&
+                        homework.status === "submitted" &&
                         <div className={styles.controls}>
                             <button className={styles.controls} onClick={handleEdit}>Редактировать</button>
                             <button className={styles.controls} onClick={() => removeHomeworkMutation.mutate()}>Удалить</button>
@@ -90,7 +89,7 @@ const HomeworksCard = ({ homework } : { homework: IHomework}) => {
                     </p>
                 )}
                 {
-                    homework.assessment !== '' && homework.isRated
+                    homework.assessment !== '' && homework.status !== "submitted"
                     &&  <div className={styles.assessment}>
                             Комментарий преподавателя
                             <p>{homework.assessment}</p>
@@ -98,24 +97,33 @@ const HomeworksCard = ({ homework } : { homework: IHomework}) => {
                 }
             </div>
             <div className={styles.homeworkGrade}>
-                {!homework.isRated
-                    ?
+                {homework.status === "submitted"
+                    &&
                 <p className={styles.unratedSign}>
                     Задание ожидает оценки
                     <FontAwesomeIcon
                         icon={faHourglassStart}
                         className={styles.icon}/>
                 </p>
-                :
-                    <p className={styles.ratedSign}>
-                        Задание оценено
-                        <FontAwesomeIcon icon={faCircleCheck} className={styles.icon}/>
-                    </p>
                 }
                 {
-                    homework.isRated &&
-                    <p className={styles.grade}>
-                        Ваша оценка {homework.grade} <FontAwesomeIcon icon={faStar} className={styles.starIcon}/>
+                    homework.status === 'graded' &&
+                    <>
+                        <p className={styles.ratedSign}>
+                            Задание оценено
+                            <FontAwesomeIcon icon={faCircleCheck} className={styles.icon}/>
+                        </p>
+                        <p className={styles.grade}>
+                            Ваша оценка {homework.grade} <FontAwesomeIcon icon={faStar} className={styles.starIcon}/>
+                        </p>
+                    </>
+                }
+                {
+                    homework.status === "returned"
+                    &&
+                    <p className={styles.returnedSign}>
+                        Отправлено на доработку
+                        <FontAwesomeIcon icon={faHammer} className={styles.icon}/>
                     </p>
                 }
             </div>

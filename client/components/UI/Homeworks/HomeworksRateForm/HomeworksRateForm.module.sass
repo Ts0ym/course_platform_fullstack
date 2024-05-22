@@ -1,4 +1,4 @@
-@use '../../../../styles/colors' as *
+@use '@/styles/colors' as *
 
 .form
   width: 100%
@@ -32,6 +32,12 @@
   font-size: 2em
   font-weight: bold
 
+.returnWarning
+  margin-top: 0.5em
+  color: $color-red
+  font-weight: bold
+  font-size: 1.5em
+
 .showTextButton
   cursor: pointer
   margin: 1.5em 0
@@ -39,13 +45,19 @@
   display: flex
   align-items: center
 
+
 .icon
   margin-left: 0.4em
   font-size: 0.8em
 
+.homeworksTitle
+  margin-top: 1em
+  color: $color-grey
+
 .homeworkText
   color: $color-lightblack
   line-height: 1.4
+  margin-bottom: 1em
 
 .userDataContainer
   display: flex
@@ -67,11 +79,6 @@
   flex-wrap: nowrap
   white-space: nowrap
 
-.contentContainer
-  margin: 1em 0
-  padding: 2em
-  background-color: $color-lightergrey
-  border-radius: 1em 1em 1em 0
 
 .studentInfo
   display: flex
@@ -96,6 +103,16 @@
   padding: 2em 0
 
 .buttonsContainer
+  position: sticky
+  bottom: 0
+  background-color: white
+  padding: 0.5em
+  border-radius: 0.3em
   display: flex
+  align-items: center
+
+.leftButtons
+  display: flex
+  gap: 0.5em
 
 

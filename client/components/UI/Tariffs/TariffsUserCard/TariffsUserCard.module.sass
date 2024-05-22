@@ -1,0 +1,41 @@
+@use '@/styles/colors' as *
+
+.card
+  border: 0.01em solid $color-bordergray
+  padding: 1.5em
+  border-radius: 1em
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)
+  background-color: #fff
+  width: 30em
+  display: flex
+  flex-direction: column
+  min-height: 30em
+
+.name
+  font-weight: bold
+  font-size: 1.9em
+  margin-bottom: 1em
+  display: flex
+  width: 100%
+  justify-content: center
+
+.description
+  font-size: 1.1em
+  margin-bottom: 1em
+  line-height: 1.4
+
+.boltIcon
+  font-size: 1.5em
+  color: #ffba24
+  margin-right: 0.4em
+
+.duration, .price, .consultations
+  font-size: 1.1em
+  margin-bottom: 1em
+  font-weight: bold
+  display: flex
+  align-items: center
+
+.btnContainer
+  display: flex
+  margin-top: auto

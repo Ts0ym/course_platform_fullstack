@@ -8,7 +8,7 @@ import styles from './CourseContent.module.sass'
 import {Modal, ProgressBar} from "react-bootstrap";
 import {ICourse, ICourseProgress, ICourseTheme} from "@/types";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faBook, faUnlock} from "@fortawesome/free-solid-svg-icons";
+import {faBook, faLock, faUnlock} from "@fortawesome/free-solid-svg-icons";
 import {API_URL} from "@/constants";
 import CourseContentThemeCard from "@/components/UI/Courses/CourseContentThemeCard/CourseContentThemeCard";
 import LessonList from "@/components/UI/Courses/LessonList/LessonList";
@@ -29,7 +29,7 @@ const CourseContentPage = ({params: {courseId}}: {params: {courseId: string}}) =
         queryFn: () => CoursesService.getCoursesWithProgress(user._id, courseId),
         queryKey: ['courseWithProgress'],
     })
-    const [show, setShow] = React.useState(false);
+    const [showLessons, setShowLessons] = React.useState(false);
     const [currentTheme, setCurrentTheme] = React.useState<ICourseTheme | null>(null)
     const router = useRouter()
 
@@ -51,19 +51,36 @@ const CourseContentPage = ({params: {courseId}}: {params: {courseId: string}}) =
         ).length / theme.lessons.length * 100);
     }
 
-    const handleClose = () => setShow(!show)
+    const handleClose = () => setShowLessons(!showLessons)
     const breadcrumbs = [
         {title: "Курсы", path: "/mycourses"},
         {title: course?.title, path: "/mycourses/" + courseId}
     ]
 
+    const getRemainingDays = () => {
+        if (!progress || !progress.tariff || !progress.startDate) {
+            return 0;
+        }
+        const tariffDuration = progress.tariff.duration;
+        const startDate = new Date(progress.startDate);
+        const currentDate = new Date();
+        const timeDifference = currentDate.getTime() - startDate.getTime();
+        const daysPassed = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+        const remainingDays = tariffDuration - daysPassed;
+        return remainingDays >= 0 ? remainingDays : 0;
+    }
+
     return (
         <>
-        <Modal show={show} onHide={handleClose} size={"lg"}>
+        <Modal show={showLessons} onHide={handleClose} size={"lg"}>
             <Modal.Body>
                 <LessonList
-                    lessons={currentTheme ? currentTheme?.lessons : []}
-                    completedLessonsIds={progress?.completedLessons || []}
+                    courseId={course?._id || ''}
+                    themeId={currentTheme?._id || ''}
+                    userId={user._id}
+                    themeTitle={currentTheme?.title || ''}
+                    // lessons={currentTheme ? currentTheme?.lessons : []}
+                    // completedLessonsIds={progress?.completedLessons || []}
                     onExit={handleClose}
                 />
             </Modal.Body>
@@ -98,9 +115,20 @@ const CourseContentPage = ({params: {courseId}}: {params: {courseId: string}}) =
                                 уроков</p>
                         </div>
                         <div className={styles.infoCard}>
-                            <FontAwesomeIcon icon={faUnlock} className={styles.infoCardIcon}/>
-                            <p><span>Доступен</span><br/>
-                                бессрочно</p>
+                            {
+                                getRemainingDays() > 0
+                                ?
+                                <>
+                                    <FontAwesomeIcon icon={faUnlock} className={styles.infoCardIcon}/>
+                                    <p><span>Задания доступны</span><br/>
+                                        {getRemainingDays()} дней</p>
+                                </>
+                                :
+                                <>
+                                    <FontAwesomeIcon icon={faLock} className={styles.infoCardIcon}/>
+                                    <p><span>Задания</span><br/>не доступны</p>
+                                </>
+                            }
                         </div>
                     </div>
                 </div>
@@ -114,14 +142,15 @@ const CourseContentPage = ({params: {courseId}}: {params: {courseId: string}}) =
             </div>
             <div className={styles.courseThemesContainer}>
                 <div className={styles.courseThemes}>
-                    {course?.themes.map((theme: ICourseTheme) =>
+                    {course?.themes.map((theme: ICourseTheme, index: number) =>
                         <CourseContentThemeCard
                             theme={theme}
+                            index={index}
                             key={theme._id}
                             percentComplete={getThemePercentage(theme) || 0}
                             onClick={() => {
                                 setCurrentTheme(theme)
-                                setShow(true)
+                                setShowLessons(true)
                             }}
                         />)
                     }

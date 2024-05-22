@@ -42,7 +42,8 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "serve-static": "^1.15.0",
-    "uuidv4": "^6.2.13"
+    "uuidv4": "^6.2.13",
+    "yookassa": "^0.1.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
