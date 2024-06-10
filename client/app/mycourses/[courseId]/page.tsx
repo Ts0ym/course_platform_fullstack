@@ -17,10 +17,6 @@ import CustomButton from "@/components/common/CustomButton/CustomButton";
 import {useRouter} from "next/navigation";
 import {getCourseProgress} from "@/utils/coursesDataUtils";
 
-interface CourseWithProgress{
-    course: ICourse
-    progress: ICourseProgress
-}
 
 const CourseContentPage = ({params: {courseId}}: {params: {courseId: string}}) => {
 

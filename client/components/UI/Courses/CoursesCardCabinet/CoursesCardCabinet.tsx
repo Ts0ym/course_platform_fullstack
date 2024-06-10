@@ -3,6 +3,8 @@ import styles from './CoursesCardCabinet.module.sass';
 import {ICourse} from "@/types";
 import {API_URL} from "@/constants";
 import Image from "next/image";
+import {faArrowRightLong} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const CoursesCardCabinet = ({ course, onClick} : {course: ICourse, onClick?: () => void}) => {
     return (
@@ -14,12 +16,15 @@ const CoursesCardCabinet = ({ course, onClick} : {course: ICourse, onClick?: () 
                 </div>
                 <div className={styles.bottomContainer}>
                     <p className={styles.lessons}>{course.themes.reduce((total, theme) => total + theme.lessons.length, 0)} уроков</p>
-                    <div className={styles.tags}>
-                        {
-                            course.tags.map((tag, index) => (
-                                <div key={index} className={styles.tag}>{tag}</div>
-                            ))
-                        }
+                    <div className={styles.tagsContainer}>
+                        <div className={styles.tags}>
+                            {
+                                course.tags.map((tag, index) => (
+                                    <div key={index} className={styles.tag}>{tag}</div>
+                                ))
+                            }
+                        </div>
+                        <FontAwesomeIcon icon={faArrowRightLong} className={styles.arrow}/>
                     </div>
                 </div>
             </div>

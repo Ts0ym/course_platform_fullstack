@@ -98,12 +98,11 @@ const NavBar = () => {
 
                         <div className={styles.dropdownMenu}>
                             {/*<Link href="/mycourses" className={styles.dropdownItem}>Мои курсы</Link>*/}
-                            <p className={styles.balanceItem}>{data?.balance}<FontAwesomeIcon icon={faCoins} className={styles.coinIcon}/></p>
+                            <p className={styles.balanceItem}>Ваш баланс: {data?.balance}<FontAwesomeIcon icon={faCoins} className={styles.coinIcon}/></p>
                             <Link href="/achievements" className={styles.dropdownItem}>Достижения</Link>
                             <Link href="/profile" className={styles.dropdownItem}>Настройки профиля</Link>
                             <p className={styles.exitItem} onClick={() => logout()}>Выйти</p>
                         </div>
-
                     </div>
                 }
             </div>

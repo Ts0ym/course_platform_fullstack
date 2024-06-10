@@ -114,7 +114,7 @@ const HomeworksCard = ({ homework } : { homework: IHomework}) => {
                             <FontAwesomeIcon icon={faCircleCheck} className={styles.icon}/>
                         </p>
                         <p className={styles.grade}>
-                            Ваша оценка {homework.grade} <FontAwesomeIcon icon={faStar} className={styles.starIcon}/>
+                            Оценка куратора {homework.grade} <FontAwesomeIcon icon={faStar} className={styles.starIcon}/>
                         </p>
                     </>
                 }

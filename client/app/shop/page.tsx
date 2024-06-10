@@ -7,7 +7,7 @@ import { UsersService } from '@/services/usersService';
 import { NotificationsService } from '@/services/notificationsService';
 import styles from './ShopPage.module.sass';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCartShopping, faCoins, faStore} from "@fortawesome/free-solid-svg-icons";
+import {faBan, faCartShopping, faCoins, faStore} from "@fortawesome/free-solid-svg-icons";
 import BackButton from "@/components/common/BackButton/BackButton";
 import CustomButton from "@/components/common/CustomButton/CustomButton";
 import {API_URL} from "@/constants";
@@ -75,6 +75,7 @@ const ShopPage = () => {
             <div className={styles.itemsList}>
                 {items.map((item: any) => (
                     <div key={item._id} className={styles.itemCard}>
+                        {!item.enable && <div className={styles.unenableIcon}><FontAwesomeIcon icon={faBan} className={styles.disabledIcon}/> Временно недоступно</div>}
                         <Image
                             src={API_URL + "image/" + item.icon}
                             alt={"image"}

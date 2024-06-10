@@ -17,6 +17,9 @@ export class ShopItem {
 
     @Prop({required: true})
     icon: string;
+
+    @Prop({required: true})
+    enable: boolean;
 }
 
 export type ShopItemDocument = ShopItem & Document;

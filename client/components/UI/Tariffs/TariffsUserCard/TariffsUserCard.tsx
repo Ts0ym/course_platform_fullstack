@@ -19,7 +19,7 @@ const TariffsUserCard = ({tariff} : {tariff: ITariff}) => {
 
     return (
         <div className={styles.card}>
-            <h2 className={styles.name}>{tariff.name}</h2>
+            <h1 className={styles.name}>{tariff.name}</h1>
             <p className={styles.description}>{tariff.description}</p>
             <p className={styles.duration}>
                 <FontAwesomeIcon icon={faBolt} className={styles.boltIcon}/>

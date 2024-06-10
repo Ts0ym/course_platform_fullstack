@@ -10,6 +10,7 @@ import CustomCenterModal from "@/components/common/CustomCenterModal/CustomCente
 import CourseTariffList from "@/components/UI/Courses/CourseTariffList/CourseTariffList";
 import { useAppSelector } from "@/redux/hooks";
 import SearchInput from "@/components/common/SearchInput/SearchInput";
+import CoursesNotFound from "@/components/UI/Courses/CoursesNotFound/CoursesNotFound";
 
 const Page = () => {
     const user = useAppSelector(store => store.auth.user);
@@ -78,7 +79,7 @@ const Page = () => {
                             </div>
                         ))}
                         <div
-                            className={styles.tag}
+                            className={styles.resetButton}
                             onClick={() => { setSelectedTag(null); setSearchQuery(''); }}
                         >
                             Сбросить фильтры
@@ -99,17 +100,24 @@ const Page = () => {
                                 <Spinner animation="border" variant="primary"/>
                             </div>
                         ) :
-                        <div className={styles.coursesList}>
-                            {courses && Array.isArray(courses) && (
-                                courses.map(course => (
-                                    <CoursesDisplayCard
-                                        key={course._id}
-                                        course={course}
-                                        onClick={() => onCardClick(course._id)}
-                                    />
-                                ))
-                            )}
-                        </div>
+                        <>
+                            {
+                                courses.length  !== 0 ?
+                                <div className={styles.coursesList}>
+                                    {courses && Array.isArray(courses) && (
+                                        courses.map(course => (
+                                            <CoursesDisplayCard
+                                                key={course._id}
+                                                course={course}
+                                                onClick={() => onCardClick(course._id)}
+                                            />
+                                        ))
+                                    )
+                                    }
+                                </div>
+                                    : <CoursesNotFound/>
+                            }
+                        </>
                     }
                 </div>
                 <div className={styles.description}>

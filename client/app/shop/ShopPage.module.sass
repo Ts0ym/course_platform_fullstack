@@ -1,3 +1,6 @@
+@use '@/styles/colors' as *
+
+
 .shopPage
   display: flex
   flex-direction: column
@@ -29,15 +32,21 @@
     padding: 1rem
 
   .itemCard
+    position: relative
     display: flex
     flex-direction: column
     align-items: center
     border: 1px solid #ccc
     border-radius: 1rem
-    padding: 1rem
+    padding: 0 1rem 1rem 1rem
     width: 15rem
     text-align: center
     line-height: 1.2
+    height: 33rem
+    transition: all 0.4s ease-in-out
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)
+    &:hover
+      transform: translate(-0.5em, -0.5em)
     @media (max-width: 600px)
       width: 90%
     h2
@@ -48,7 +57,7 @@
         font-size: 1rem
     .price
       font-weight: bold
-      margin-top: 1em
+      margin-top: auto
       font-size: 1.2em
 
     button
@@ -60,6 +69,23 @@
       @media (max-width: 600px)
         font-size: 0.875rem
 
+    .unenableIcon
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)
+      padding: 0.2rem
+      display: flex
+      justify-content: center
+      align-items: center
+      background-color: $color-lightgrey
+      color: $color-lightblack
+      border-radius: 0.4em
+      position: absolute
+      top: 0.4em
+      right: 0.4em
+      font-weight: bold
+      font-size: 0.9em
+      .disabledIcon
+        font-size: 0.9rem
+        margin-right: 0.2em
 
 .itemsHeader
   align-self: flex-start
