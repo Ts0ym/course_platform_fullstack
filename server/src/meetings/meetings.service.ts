@@ -9,6 +9,7 @@ export class MeetingsService {
 
     async create(meetingData: any): Promise<Meeting> {
         try {
+            console.log(meetingData.payload.scheduled_event?.location)
             const newMeeting = new this.meetingModel({
                 email: meetingData.payload.email,
                 name: meetingData.payload.scheduled_event.name || 'Unknown', // В случае если имя не задано, используем 'Unknown'
@@ -19,7 +20,7 @@ export class MeetingsService {
                 inviteeUri: meetingData.payload.uri, // URI приглашенного для идентификации
                 cancel_url: meetingData.payload.cancel_url,
                 join_url: meetingData.payload.scheduled_event?.location?.join_url,
-                password: meetingData.payload.scheduled_event?.location.data.password,
+                password: meetingData.payload.scheduled_event?.location?.data.password,
             });
             return newMeeting.save();
         }catch (e) {

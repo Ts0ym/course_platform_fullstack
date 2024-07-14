@@ -261,30 +261,33 @@ const Page = ({ params: { lessonId } }: {params: {lessonId: string}}) => {
                         }
                     </div>
                 }
-                <div className={styles.othersHomeworksContainer}>
-                    <h1><FontAwesomeIcon icon={faPeopleGroup} className={styles.homeworkIcon}/>Ответы других пользователей</h1>
-                    <HomeworksCard homework={{
-                        _id: "",
-                        status: "graded",
-                        userId: {
+                {
+                    lesson?.type === "text"
+                    && <div className={styles.othersHomeworksContainer}>
+                        <h1><FontAwesomeIcon icon={faPeopleGroup} className={styles.homeworkIcon}/>Ответы других пользователей</h1>
+                        <HomeworksCard homework={{
                             _id: "",
-                            name: "Пользователь",
-                            surname: "Тестовый",
-                            balance: 0,
-                            avatar: "3a10b7bc-2df5-4a6b-afea-78cfe98caddc.png",
-                            email: "testuser@mail.ru",
-                            password: "",
-                            role: ""
-                        },
-                        lessonId: '',
-                        sendTime: "2024-05-18T15:58:37.137+00:00",
-                        grade: 5,
-                        assessment: "Принято",
-                        content: "https://www.figma.com/design/NMQUuOY5AxH8TuyCTFOBYM/Untitled?node-id=422-2&t=gU5OKDpwTxjPfhY6-0",
-                        previousVersion: null,
+                            status: "graded",
+                            userId: {
+                                _id: "",
+                                name: "Пользователь",
+                                surname: "Тестовый",
+                                balance: 0,
+                                avatar: "3a10b7bc-2df5-4a6b-afea-78cfe98caddc.png",
+                                email: "testuser@mail.ru",
+                                password: "",
+                                role: ""
+                            },
+                            lessonId: '',
+                            sendTime: "2024-05-18T15:58:37.137+00:00",
+                            grade: 5,
+                            assessment: "Принято",
+                            content: "https://www.figma.com/design/NMQUuOY5AxH8TuyCTFOBYM/Untitled?node-id=422-2&t=gU5OKDpwTxjPfhY6-0",
+                            previousVersion: null,
 
-                    }}/>
-                </div>
+                        }}/>
+                    </div>
+                }
                 {
                     currentIndex < lessons.length - 1 &&
                     <div className={styles.nextButtonContainer}>

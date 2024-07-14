@@ -26,13 +26,19 @@ export class LessonsService {
     ) {}
 
     async createVideo(dto: CreateLessonDto, videoFile){
-        const videoFileImage = await this.filesService.createFile(videoFile, FileTypes.VIDEO)
-        const {themeId, ...rest } = dto
-        const theme = await this.themeModel.findById(themeId)
-        const lesson = await this.lessonModel.create({...rest, videoUrl: videoFileImage})
-        theme.lessons.push(lesson._id)
-        theme.save()
-        return lesson
+        try {
+            const videoFileImage = await this.filesService.createFile(videoFile, FileTypes.VIDEO)
+            const {themeId, ...rest } = dto
+            const theme = await this.themeModel.findById(themeId)
+            const lesson = await this.lessonModel.create({...rest, videoUrl: videoFileImage, themeId: theme._id})
+            console.log(lesson)
+            theme.lessons.push(lesson._id)
+            theme.save()
+            return lesson
+        }catch (e) {
+            console.log(e)
+            return e
+        }
     }
 
     async create(dto: CreateLessonDto){

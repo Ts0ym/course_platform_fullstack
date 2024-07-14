@@ -6,7 +6,6 @@ import {User, UserSchema} from "./users.schema";
 import {JwtModule} from "@nestjs/jwt";
 import {CoursesProgressService} from "../courses-progress/courses-progress.service";
 import {CourseProgress, CourseProgressSchema} from "../courses-progress/courses-progress.schema";
-import {CoursesService} from "../courses/courses.service";
 import {Course, CourseSchema} from "../courses/courses.schema";
 import {Lesson, LessonSchema} from "../lessons/lessons.shema";
 import {FilesService} from "../files/files.service";

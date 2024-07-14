@@ -11,6 +11,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useRouter} from "next/navigation";
 import {useQuery} from "@tanstack/react-query";
 import {CoursesService} from "@/services/coursesService";
+import {any} from "prop-types";
 
 const getLessonIcon = (type: string) => {
     switch (type) {
@@ -33,6 +34,10 @@ const LessonList = ({ themeId, userId, courseId, onExit, themeTitle} : { themeId
         queryFn:() => CoursesService.getLessonsWithStatuses(themeId, userId, courseId),
         queryKey:['lessons', themeId, userId, courseId]
     });
+
+    lessons?.forEach((lesson: ILesson, index: number)  =>  {
+            console.log(lesson)
+    })
 
     if (isLoading) {
         return <div>Loading...</div>;

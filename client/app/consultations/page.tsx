@@ -56,7 +56,7 @@ const Page = () => {
                         email: user?.email,
                         name: `${user?.name} ${user?.surname}`,
                     }}
-                    url="https://calendly.com/tsoymaksimi2002"
+                    url="https://calendly.com/poctovyjservis"
                 />
             </div>
         </div>
